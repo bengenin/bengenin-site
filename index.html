@@ -7,30 +7,54 @@
   <meta name="description" content="Ben Genin personal site" />
 
   <style>
+    :root {
+      --bg: #fafafa;
+      --text: #202124;
+      --muted: #5f6368;
+      --link: #202124;
+      --accent: #111;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #ffffff;
-      color: #222;
+      background: radial-gradient(circle at top, #ffffff 0, #f5f5f5 45%, #f0f0f0 100%);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       line-height: 1.5;
       font-size: 17px;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.15px;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
     .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 60px 20px 100px;
-      text-align: center;
+      max-width: 640px;
+      width: 100%;
+      padding: 48px 32px 56px;
+      background: rgba(255,255,255,0.94);
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.08);
+      text-align: left;
+      animation: fadeIn 480ms ease-out;
     }
 
     h1 {
-      font-size: 44px;
+      font-size: 46px;
       font-weight: 300;
       margin: 0;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.6px;
     }
 
     h1 strong {
@@ -39,62 +63,129 @@
 
     .tagline {
       margin-top: 18px;
-      color: #555;
-      font-size: 19px;
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.45;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.5;
+      max-width: 520px;
     }
 
     .links {
-      margin-top: 50px;
-      display: grid;
-      gap: 24px;
-      justify-items: center;
+      margin-top: 40px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .links li + li {
+      margin-top: 14px;
     }
 
     .link {
-      font-size: 22px;
+      font-size: 20px;
       text-decoration: none;
-      color: #222;
+      color: var(--link);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      padding-bottom: 2px;
+      transition: transform 140ms ease-out, opacity 140ms ease-out;
+    }
+
+    .link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: rgba(0,0,0,0.14);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 160ms ease-out;
+    }
+
+    .link span.label {
       letter-spacing: 0.3px;
     }
 
+    .link:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    .link:hover::after {
+      transform: scaleX(1);
+    }
+
     .footer-emoji {
-      margin-top: 80px;
-      font-size: 32px;
-      opacity: 0.8;
+      margin-top: 40px;
+      font-size: 28px;
+      opacity: 0.9;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        padding: 32px 20px 40px;
+        border-radius: 20px;
+      }
+      h1 {
+        font-size: 36px;
+      }
+      .tagline {
+        font-size: 17px;
+      }
+      .link {
+        font-size: 19px;
+      }
     }
   </style>
 
 </head>
-
 <body>
-  <main class="wrap">
+  <div class="shell">
+    <main class="wrap">
+      <header>
+        <h1><strong>ben</strong>genin</h1>
+        <p class="tagline">
+          Lead Account Executive with +7 years experience in consultative B2B sales and go-to-market strategies.
+          <br><br>
+          Currently: Lead Account Executive @ LinkedIn
+        </p>
+      </header>
 
-    <h1><strong>ben</strong>genin</h1>
+      <ul class="links">
+        <li>
+          <a class="link"
+             href="https://mail.google.com/mail/?view=cm&fs=1&tf=cm&to=ben.genin8@gmail.com&su=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E"
+             target="_blank">
+            <span>📝</span><span class="label">cv</span>
+          </a>
+        </li>
+        <li>
+          <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">
+            <span>🤝</span><span class="label">linkedin</span>
+          </a>
+        </li>
+        <li>
+          <a class="link" href="mailto:ben.genin8@gmail.com">
+            <span>✉️</span><span class="label">contact</span>
+          </a>
+        </li>
+      </ul>
 
-    <div class="tagline">
-      Lead Account Executive with +7 years experience in consultative B2B sales and go-to-market strategies.
-      <br><br>
-      Currently: Lead Account Executive @ LinkedIn
-    </div>
-
-    <section class="links">
-      <a class="link" 
-         href="https://mail.google.com/mail/?view=cm&fs=1&tf=cm&to=ben.genin8@gmail.com&su=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E" 
-         target="_blank">
-         📝 cv
-      </a>
-
-      <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">🤝 linkedin</a>
-
-      <a class="link" href="mailto:ben.genin8@gmail.com">✉️ contact</a>
-    </section>
-
-    <div class="footer-emoji">🎾</div>
-
-  </main>
+      <div class="footer-emoji">🎾</div>
+    </main>
+  </div>
 </body>
 </html>
