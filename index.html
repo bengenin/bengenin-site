@@ -74,6 +74,38 @@
       font-size: 30px;
       opacity: 0.9;
     }
+
+    /* Mobile layout: stack links as a list, remove dividers, tighten spacing */
+    @media (max-width: 640px) {
+      body {
+        padding: 40px 18px 60px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .tagline {
+        font-size: 17px;
+      }
+
+      .links-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .links-row .divider {
+        display: none;
+      }
+
+      .link {
+        font-size: 19px;
+      }
+
+      .footer-emoji {
+        margin-top: 40px;
+      }
+    }
   </style>
 </head>
 
