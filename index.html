@@ -43,7 +43,7 @@
     }
 
     .links-row {
-      margin-top: 46px;
+      margin-top: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -74,11 +74,11 @@
 
     /* Chatbox layout */
     .chat-block {
-      margin-top: 50px;
+      margin-top: 28px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
     .chat-label {
@@ -92,8 +92,14 @@
       height: auto;
     }
 
+    .chat-wrapper iframe {
+      width: 100%;
+      height: 420px;
+      border: 0;
+    }
+
     .footer-emoji {
-      margin-top: 70px;
+      margin-top: 50px;
       font-size: 30px;
       opacity: 0.9;
     }
@@ -125,11 +131,15 @@
       }
 
       .chat-block {
-        margin-top: 40px;
+        margin-top: 24px;
+      }
+
+      .chat-wrapper iframe {
+        height: 360px;
       }
 
       .footer-emoji {
-        margin-top: 40px;
+        margin-top: 36px;
       }
     }
   </style>
@@ -180,10 +190,7 @@
 
     <div class="chat-wrapper">
       <iframe
-          src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h"
-          width="100%"
-          style="height: 420px; min-height: 420px;"
-          frameborder="0">
+          src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h">
       </iframe>
     </div>
   </section>
