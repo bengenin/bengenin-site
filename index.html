@@ -26,7 +26,9 @@
       letter-spacing: -0.4px;
     }
 
-    h1 strong { font-weight: 700; }
+    h1 strong {
+      font-weight: 700;
+    }
 
     .tagline {
       margin-top: 18px;
@@ -44,7 +46,6 @@
       align-items: center;
       justify-content: center;
       gap: 28px;
-      flex-wrap: wrap;
     }
 
     .links-row .divider {
@@ -64,7 +65,9 @@
       transition: opacity 0.15s ease;
     }
 
-    .link:hover { opacity: 0.7; }
+    .link:hover {
+      opacity: 0.7;
+    }
 
     .footer-emoji {
       margin-top: 70px;
@@ -72,19 +75,36 @@
       opacity: 0.9;
     }
 
+    /* Mobile layout: stack links as a list, remove dividers, tighten spacing */
     @media (max-width: 640px) {
-      body { padding: 40px 18px 60px; }
-      h1 { font-size: 34px; }
-      .tagline { font-size: 17px; }
+      body {
+        padding: 40px 18px 60px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .tagline {
+        font-size: 17px;
+      }
+
       .links-row {
         flex-direction: column;
         gap: 10px;
       }
+
       .links-row .divider {
         display: none;
       }
-      .link { font-size: 19px; }
-      .footer-emoji { margin-top: 40px; }
+
+      .link {
+        font-size: 19px;
+      }
+
+      .footer-emoji {
+        margin-top: 40px;
+      }
     }
   </style>
 </head>
@@ -103,7 +123,8 @@
 
     <!-- CV link -->
     <a class="link"
-       href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0D%0A%0D%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0D%0A%0D%0AThanks,%0D%0A%3CName%3E%0D%0A%3CPhone%3E%0D%0A%3CEmail%3E">
+       href="https://mail.google.com/mail/?view=cm&fs=1&tf=cm&to=ben.genin8@gmail.com&su=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E"
+       target="_blank">
       cv
       <span>📝</span>
     </a>
@@ -122,14 +143,6 @@
     <a class="link" href="mailto:ben.genin8@gmail.com">
       contact
       <span>✉️</span>
-    </a>
-
-    <div class="divider"></div>
-
-    <!-- Chat about me (Gemini link goes here) -->
-    <a class="link" href="YOUR_GEMINI_CHAT_URL_HERE" target="_blank">
-      chat about my experience
-      <span>💬</span>
     </a>
 
   </div>
