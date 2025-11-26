@@ -1,190 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
+  <title>bengenin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ben genin</title>
-
-  <!-- 🐣 Favicon -->
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐣</text></svg>">
-
   <style>
     body {
       margin: 0;
-      background: #ffffff;
-      color: #222;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
-      font-size: 17px;
-      letter-spacing: 0.2px;
-      padding: 60px 20px 100px;
+      padding: 24px 16px 80px;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       text-align: center;
+      color: #111;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
     }
 
     h1 {
-      font-size: 42px;
-      font-weight: 300;
-      margin: 0;
-      letter-spacing: -0.4px;
+      font-size: 32px;
+      letter-spacing: 0.04em;
+      margin: 24px 0 8px;
     }
-    h1 strong { font-weight: 700; }
+
+    h1 span {
+      font-weight: 300;
+    }
+
+    p {
+      margin: 4px 0;
+      line-height: 1.4;
+    }
 
     .tagline {
-      margin-top: 18px;
-      color: #555;
-      font-size: 18px;
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.45;
+      margin-top: 8px;
+      font-size: 15px;
+      color: #444;
     }
 
-    .links-row {
-      margin-top: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
+    .current-role {
+      margin-top: 16px;
+      font-size: 15px;
     }
 
-    .links-row .divider {
-      width: 1px;
-      height: 22px;
-      background: #999;
-      opacity: 0.4;
-    }
-
-    .link {
-      font-size: 20px;
+    .current-role a,
+    .links a {
       text-decoration: none;
-      color: #222;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: opacity 0.15s ease;
-    }
-    .link:hover { opacity: 0.7; }
-
-    /* Chatbox layout */
-    .chat-block {
-      margin-top: 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      color: inherit;
     }
 
-    .chat-label {
+    .links {
+      margin-top: 24px;
       font-size: 16px;
-      color: #666;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .links span {
+      cursor: pointer;
+    }
+
+    .divider {
+      width: 36px;
+      height: 1px;
+      background: #ddd;
+      margin: 24px auto 16px;
+    }
+
+    .prompt {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #555;
     }
 
     .chat-wrapper {
-      width: 100%;
-      max-width: 640px;
-    }
-    .chat-wrapper iframe {
-      width: 100%;
-      height: 420px;
-      border: 0;
+      margin-top: 24px;
+      text-align: left;
     }
 
-    .footer-emoji {
-      margin-top: 50px;
-      font-size: 30px;
-      opacity: 0.9;
+    .chat-title {
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
 
-    /* new footer */
-    .footer-text {
-      margin-top: 18px;
-      font-size: 14px;
-      color: #999;
+    /* keep widget full width but visually contained */
+    .chat-widget {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #eee;
     }
 
-    @media (max-width: 640px) {
-      body { padding: 40px 18px 80px; }
-      h1 { font-size: 34px; }
-      .tagline { font-size: 17px; }
-
-      .links-row {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .links-row .divider {
-        display: none;
-      }
-      .link { font-size: 19px; }
-
-      .chat-block { margin-top: 24px; }
-      .chat-wrapper iframe { height: 360px; }
-
-      .footer-emoji { margin-top: 36px; }
-      .footer-text { margin-top: 14px; }
+    svg.linkedin-icon {
+      vertical-align: middle;
+      margin-left: 4px;
     }
   </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1>ben<span>genin</span></h1>
 
-  <h1><strong>ben</strong>genin</h1>
+    <p class="tagline">
+      Senior Account Executive with 7+ years in consultative B2B sales and go to market strategies.
+    </p>
 
-  <div class="tagline">
-    Senior Account Executive with +7 years experience in B2B sales and go-to-market strategies.
-    <br><br>
-    Currently: Lead AE @ LinkedIn
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-      xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
-      <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-    </svg>
-  </div>
+    <p class="current-role">
+      Currently: Lead AE @ LinkedIn
+      <a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener noreferrer">
+        <svg class="linkedin-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#0A66C2" d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0zM.25 24h4.47V7.98H.25V24zM18.45 7.74c-2.38 0-3.44 1.31-4.05 2.23V7.98h-4.47V24h4.47v-8.95c0-.48.04-.96.18-1.3.39-.96 1.28-1.96 2.77-1.96 1.95 0 2.73 1.48 2.73 3.66V24H24v-9.43c0-5.05-2.7-7.39-5.55-7.39z"/>
+        </svg>
+      </a>
+    </p>
 
-  <div class="links-row">
-
-    <!-- CV link -->
-    <a class="link"
-       href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E">
-      cv 📝
-    </a>
+    <div class="links">
+      <span>
+        <a href="YOUR_CV_URL" target="_blank" rel="noopener noreferrer">cv 📄✏️</a>
+      </span>
+      <span>
+        <a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener noreferrer">
+          linkedin
+          <svg class="linkedin-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#0A66C2" d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0zM.25 24h4.47V7.98H.25V24zM18.45 7.74c-2.38 0-3.44 1.31-4.05 2.23V7.98h-4.47V24h4.47v-8.95c0-.48.04-.96.18-1.3.39-.96 1.28-1.96 2.77-1.96 1.95 0 2.73 1.48 2.73 3.66V24H24v-9.43c0-5.05-2.7-7.39-5.55-7.39z"/>
+          </svg>
+        </a>
+      </span>
+      <span>
+        <a href="mailto:YOUR_EMAIL_ADDRESS">contact ✉️</a>
+      </span>
+    </div>
 
     <div class="divider"></div>
 
-    <!-- LinkedIn link with logo -->
-    <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">
-      linkedin
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-        xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
-        <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-      </svg>
-    </a>
-
-    <div class="divider"></div>
-
-    <!-- Contact -->
-    <a class="link" href="mailto:ben.genin8@gmail.com">
-      contact ✉️
-    </a>
-
-  </div>
-
-  <!-- Inline Chat -->
-  <section class="chat-block">
-    <div class="chat-label">Ask me anything about Ben.</div>
+    <p class="prompt">Ask me anything about Ben.</p>
 
     <div class="chat-wrapper">
-      <iframe
-        src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h">
-      </iframe>
+      <div class="chat-title">Ben's AI Agent</div>
+      <div class="chat-widget">
+        <!-- Paste your existing chat widget iframe or script here -->
+        <!-- Example placeholder: -->
+        <!--
+        <iframe
+          src="YOUR_CHAT_WIDGET_URL"
+          style="width:100%; height:480px; border:0;"
+          loading="lazy">
+        </iframe>
+        -->
+      </div>
     </div>
-  </section>
-
-  <div class="footer-emoji">🎾</div>
-
-  <!-- Footer -->
-  <div class="footer-text">© 2025 Ben Genin · Built with Vercel</div>
-
+  </div>
 </body>
 </html>
