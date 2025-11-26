@@ -19,7 +19,7 @@
       line-height: 1.5;
       font-size: 17px;
       letter-spacing: 0.2px;
-      padding: 60px 20px 80px;
+      padding: 60px 20px 100px;
       text-align: center;
     }
 
@@ -68,6 +68,7 @@
     }
     .link:hover { opacity: 0.7; }
 
+    /* Chatbox layout */
     .chat-block {
       margin-top: 28px;
       display: flex;
@@ -97,8 +98,15 @@
       opacity: 0.9;
     }
 
+    /* new footer */
+    .footer-text {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #999;
+    }
+
     @media (max-width: 640px) {
-      body { padding: 40px 18px 60px; }
+      body { padding: 40px 18px 80px; }
       h1 { font-size: 34px; }
       .tagline { font-size: 17px; }
 
@@ -110,9 +118,12 @@
         display: none;
       }
       .link { font-size: 19px; }
+
       .chat-block { margin-top: 24px; }
       .chat-wrapper iframe { height: 360px; }
+
       .footer-emoji { margin-top: 36px; }
+      .footer-text { margin-top: 14px; }
     }
   </style>
 </head>
@@ -121,9 +132,8 @@
 
   <h1><strong>ben</strong>genin</h1>
 
-  <!-- Tagline with LinkedIn logo next to the company name -->
   <div class="tagline">
-    Senior Account Executive with +7 years experience in consultative B2B sales and go-to-market strategies.
+    Senior Account Executive with +7 years experience in B2B sales and go-to-market strategies.
     <br><br>
     Currently: Lead AE @ LinkedIn
     <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
@@ -172,6 +182,9 @@
   </section>
 
   <div class="footer-emoji">🎾</div>
+
+  <!-- Footer -->
+  <div class="footer-text">© 2025 Ben Genin · Built with Vercel</div>
 
 </body>
 </html>
