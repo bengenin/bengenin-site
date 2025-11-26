@@ -6,8 +6,8 @@
   <title>ben genin</title>
 
   <!-- 🐣 Favicon -->
-  <link rel="icon" 
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐣</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐣</text></svg>">
 
   <style>
     body {
@@ -29,7 +29,6 @@
       margin: 0;
       letter-spacing: -0.4px;
     }
-
     h1 strong { font-weight: 700; }
 
     .tagline {
@@ -64,15 +63,11 @@
       color: #222;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       transition: opacity 0.15s ease;
     }
+    .link:hover { opacity: 0.7; }
 
-    .link:hover {
-      opacity: 0.7;
-    }
-
-    /* Chatbox layout */
     .chat-block {
       margin-top: 28px;
       display: flex;
@@ -89,9 +84,7 @@
     .chat-wrapper {
       width: 100%;
       max-width: 640px;
-      height: auto;
     }
-
     .chat-wrapper iframe {
       width: 100%;
       height: 420px;
@@ -105,42 +98,21 @@
     }
 
     @media (max-width: 640px) {
-      body {
-        padding: 40px 18px 60px;
-      }
-
-      h1 {
-        font-size: 34px;
-      }
-
-      .tagline {
-        font-size: 17px;
-      }
+      body { padding: 40px 18px 60px; }
+      h1 { font-size: 34px; }
+      .tagline { font-size: 17px; }
 
       .links-row {
         flex-direction: column;
         gap: 10px;
       }
-
       .links-row .divider {
         display: none;
       }
-
-      .link {
-        font-size: 19px;
-      }
-
-      .chat-block {
-        margin-top: 24px;
-      }
-
-      .chat-wrapper iframe {
-        height: 360px;
-      }
-
-      .footer-emoji {
-        margin-top: 36px;
-      }
+      .link { font-size: 19px; }
+      .chat-block { margin-top: 24px; }
+      .chat-wrapper iframe { height: 360px; }
+      .footer-emoji { margin-top: 36px; }
     }
   </style>
 </head>
@@ -149,44 +121,52 @@
 
   <h1><strong>ben</strong>genin</h1>
 
+  <!-- Tagline with LinkedIn logo next to the company name -->
   <div class="tagline">
     Senior Account Executive with +7 years experience in consultative B2B sales and go-to-market strategies.
     <br><br>
     Currently: Lead AE @ LinkedIn
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
+      xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
+      <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
+    </svg>
   </div>
 
   <div class="links-row">
 
     <!-- CV link -->
     <a class="link"
-       href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0D%0A%0D%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0D%0A%0D%0AThanks,%0D%0A%3CName%3E%0D%0A%3CPhone%3E%0D%0A%3CEmail%3E">
-      cv
-      <span>📝</span>
+       href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E">
+      cv 📝
     </a>
 
     <div class="divider"></div>
 
-    <!-- LinkedIn -->
-<a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">
-  linkedin
-  <span>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2" xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
-      <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-    </svg>
-  </span>
-</a>
+    <!-- LinkedIn link with logo -->
+    <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">
+      linkedin
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
+        xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
+        <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
+      </svg>
+    </a>
+
+    <div class="divider"></div>
+
+    <!-- Contact -->
+    <a class="link" href="mailto:ben.genin8@gmail.com">
+      contact ✉️
+    </a>
 
   </div>
 
-  <!-- Inline Chatbase Chat -->
+  <!-- Inline Chat -->
   <section class="chat-block">
-    <div class="chat-label">
-      Ask anything about Ben’s experience, skills, or track record.
-    </div>
+    <div class="chat-label">Ask me anything about Ben.</div>
 
     <div class="chat-wrapper">
       <iframe
-          src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h">
+        src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h">
       </iframe>
     </div>
   </section>
