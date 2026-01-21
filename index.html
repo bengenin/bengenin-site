@@ -4,20 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ben genin</title>
-
+ 
   <!-- 🐣 Favicon -->
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐣</text></svg>">
-
+ 
   <style>
+    :root {
+      --bg-primary: #fafafa;
+      --bg-secondary: #ffffff;
+      --bg-hover: #f0f0f0;
+      --text-primary: #222;
+      --text-secondary: #555;
+      --text-tertiary: #888;
+      --text-muted: #999;
+      --border-color: rgba(0,0,0,0.06);
+      --border-input: rgba(0,0,0,0.14);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 22px rgba(0,0,0,0.06);
+      --linkedin-blue: #0A66C2;
+    }
+ 
     html {
       scroll-behavior: smooth;
     }
-
+ 
     body {
       margin: 0;
-      background: #f5f5f5;
-      color: #222;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
@@ -26,7 +42,7 @@
       padding: 60px 20px 100px;
       text-align: center;
     }
-
+ 
     h1 {
       font-size: 42px;
       font-weight: 300;
@@ -34,85 +50,92 @@
       letter-spacing: -0.4px;
     }
     h1 strong { font-weight: 700; }
-
+ 
     .tagline {
       margin-top: 18px;
-      color: #555;
+      color: var(--text-secondary);
       font-size: 18px;
       max-width: 620px;
       margin-left: auto;
       margin-right: auto;
       line-height: 1.45;
     }
-
-    .links-row {
+ 
+    .tagline a {
+      vertical-align: middle;
+    }
+ 
+    .tagline-icon {
+      margin-left: 4px;
+    }
+ 
+    nav {
       margin-top: 32px;
+    }
+ 
+    .links-row {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 28px;
       flex-wrap: wrap;
     }
-
+ 
     .links-row .divider {
       width: 1px;
       height: 22px;
-      background: #999;
+      background: var(--text-muted);
       opacity: 0.4;
     }
-
+ 
     .link {
       font-size: 20px;
       text-decoration: none;
-      color: #222;
+      color: var(--text-primary);
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: opacity 0.15s ease;
     }
     .link:hover { opacity: 0.7; }
-
-    /* CTA pill styling */
+ 
+    .link-icon {
+      margin-left: 4px;
+    }
+ 
+    /* CTA button styling */
     .cta {
-  margin-top: 24px;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-
-  display: inline-flex;           /* only as wide as content */
-  align-items: center;
-  justify-content: center;
-
-  padding: 6px 14px;              /* tight pill */
-  margin-left: auto;
-  margin-right: auto;
-
-  border-radius: 999px;
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.14);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.cta:hover {
-  background: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-  opacity: 0.9;
-}
-
-.cta:hover {
-  background: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-  opacity: 0.9;
-}
-
-.cta:hover {
-  background: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-  opacity: 0.9;
-}
-
-    /* chat block at bottom, pushed further down */
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+ 
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+ 
+      padding: 6px 14px;
+ 
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-input);
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+ 
+    .cta:hover {
+      background: var(--bg-hover);
+      box-shadow: var(--shadow-md);
+      opacity: 0.9;
+    }
+ 
+    .cta:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+ 
+    /* chat block at bottom */
     .chat-block {
       margin-top: 140px;
       display: flex;
@@ -120,116 +143,142 @@
       align-items: center;
       gap: 10px;
     }
-
+ 
     .chat-wrapper {
       width: 100%;
       max-width: 640px;
-      background: #ffffff;
+      background: var(--bg-secondary);
       border-radius: 10px;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-lg);
     }
-
+ 
     .chat-wrapper iframe {
       width: 100%;
       height: 420px;
       border: 0;
     }
-
-    .footer-emoji {
+ 
+    footer {
       margin-top: 50px;
+    }
+ 
+    .footer-emoji {
       font-size: 30px;
       opacity: 0.9;
     }
-
+ 
     .footer-text {
       margin-top: 14px;
       font-size: 14px;
-      color: #888;
+      color: var(--text-tertiary);
     }
-
+ 
     @media (max-width: 640px) {
       body { padding: 40px 18px 80px; }
       h1 { font-size: 34px; }
       .tagline { font-size: 17px; }
-
+ 
       .links-row {
         flex-direction: column;
         gap: 10px;
       }
       .links-row .divider { display: none; }
       .link { font-size: 19px; }
-
+ 
       .cta { margin-top: 34px; }
-
+ 
       .chat-block { margin-top: 120px; }
       .chat-wrapper iframe { height: 360px; }
-      .footer-emoji { margin-top: 36px; }
+      footer { margin-top: 36px; }
     }
   </style>
 </head>
-
+ 
 <body>
-
-  <h1><strong>ben</strong>genin</h1>
-
-  <div class="tagline">
-    Senior Account Executive with 7+ years experience in consultative B2B sales and go-to-market strategies.
-    <br><br>
-    Currently: Lead AE @ LinkedIn
-    <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" style="vertical-align:middle;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-      xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
-        <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-      </svg>
-    </a>
-  </div>
-
-  <div class="links-row">
-
-    <a class="link"
-      href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CPhone%3E%0A%3CEmail%3E">
-      cv 📝
-    </a>
-
-    <div class="divider"></div>
-
-    <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank">
-      linkedin
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-        xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;">
-        <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-      </svg>
-    </a>
-
-    <div class="divider"></div>
-
-    <a class="link" href="mailto:ben.genin8@gmail.com">
-      contact ✉️
-    </a>
-
-  </div>
-
-  <!-- CTA that scrolls to chat -->
-  <div class="cta" onclick="document.getElementById('chat-section').scrollIntoView({ behavior: 'smooth' })">
-    Ask me anything about Ben
-  </div>
-
-  <!-- Chat section at bottom -->
-  <section id="chat-section" class="chat-block">
-    <div class="chat-wrapper">
-<iframe
-    src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h"
-    width="100%"
-    style="height: 100%; min-height: 300px"
-    frameborder="0"
-></iframe>
+ 
+  <header>
+    <h1><strong>ben</strong>genin</h1>
+ 
+    <div class="tagline">
+      Senior Account Executive with 7+ years experience in consultative B2B sales and go-to-market strategies.
+      <br><br>
+      Currently: Lead AE @ LinkedIn
+      <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+        <svg class="tagline-icon" width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
+        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
+        </svg>
+      </a>
     </div>
-  </section>
-
-  <div class="footer-emoji">🎾</div>
-  <div class="footer-text">© 2026 Ben Genin · Built with Vercel</div>
-
+  </header>
+ 
+  <nav aria-label="Main navigation">
+    <div class="links-row">
+ 
+      <a class="link"
+        href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks!">
+        cv 📝
+      </a>
+ 
+      <div class="divider"></div>
+ 
+      <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer">
+        linkedin
+        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
+          xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
+        </svg>
+      </a>
+ 
+      <div class="divider"></div>
+ 
+      <a class="link" href="mailto:ben.genin8@gmail.com">
+        contact ✉️
+      </a>
+ 
+      <div class="divider"></div>
+ 
+      <a class="link" href="https://github.com/bengenin" target="_blank" rel="noopener noreferrer">
+        github
+        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill="#111"
+            d="M12 .5C5.73.5.75 5.6.75 12c0 5.12 3.29 9.46 7.86 10.99.58.11.79-.26.79-.56v-2.07c-3.2.71-3.87-1.4-3.87-1.4-.52-1.37-1.27-1.73-1.27-1.73-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.22 1.76 1.22 1.02 1.8 2.68 1.28 3.33.98.1-.76.4-1.28.72-1.58-2.55-.3-5.23-1.31-5.23-5.83 0-1.29.45-2.35 1.19-3.18-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.97.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.89 1.19 3.18 0 4.53-2.69 5.53-5.25 5.83.41.37.78 1.09.78 2.2v3.25c0 .31.21.68.8.56A11.3 11.3 0 0 0 23.25 12C23.25 5.6 18.27.5 12 .5Z"/>
+        </svg>
+      </a>
+ 
+    </div>
+  </nav>
+ 
+  <main>
+    <!-- CTA button that scrolls to chat -->
+    <button class="cta"
+            type="button"
+            onclick="document.getElementById('chat-section').scrollIntoView({ behavior: 'smooth' })"
+            aria-label="Scroll to chat section">
+      Ask me anything about Ben
+    </button>
+ 
+    <!-- Chat section at bottom -->
+    <section id="chat-section" class="chat-block" aria-label="Interactive chat">
+      <div class="chat-wrapper">
+        <iframe
+          src="https://www.chatbase.co/chatbot-iframe/7WKehRDT0GFL74DSSIm8h"
+          title="Chat with Ben's AI assistant"
+          width="100%"
+          style="height: 100%; min-height: 300px"
+        ></iframe>
+      </div>
+    </section>
+  </main>
+ 
+  <footer>
+    <div class="footer-emoji">🎾</div>
+    <div class="footer-text">© 2026 Ben Genin · Built with Vercel</div>
+  </footer>
+ 
 </body>
 </html>
+ 
