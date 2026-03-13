@@ -49,29 +49,45 @@
     }
     h1 strong{ font-weight: 600; }
 
+    /* Cleaner, evenly spaced stack: name -> line -> current role */
     .tagline{
-      margin-top: 18px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
       color: var(--muted);
       font-size: 18px;
       font-weight: 300;
       letter-spacing: 0.25px;
-      max-width: 680px;
-      margin-left:auto;
-      margin-right:auto;
       line-height: 1.5;
     }
 
-    .tagline a{
-      vertical-align: middle;
-      text-decoration: none;
+    .tagline .line{
+      max-width: 820px;
     }
-    .tagline svg{
-      margin-left: 6px;
+
+    .current-role{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .current-role a{
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      vertical-align: middle;
+    }
+
+    .current-role svg{
+      margin-left: 4px;
       vertical-align: -2px;
     }
 
     /* “pillars” links */
-    nav{ margin-top: 34px; }
+    nav{ margin-top: 30px; }
 
     .pillars{
       width: 100%;
@@ -111,7 +127,6 @@
       border-left: 1px solid var(--divider);
     }
 
-    /* Hover behavior you want: black background, white text */
     .pillar:hover,
     .pillar:focus-visible{
       background: #111;
@@ -119,12 +134,9 @@
       outline: none;
     }
 
-    /* Make emoji/text follow the same color */
     .pillar .icon{
       font-size: 18px;
       line-height: 1;
-      filter: grayscale(0);
-      transition: filter 180ms ease;
     }
 
     /* CTA pill */
@@ -205,14 +217,18 @@
     <h1><strong>ben</strong>genin</h1>
 
     <div class="tagline">
-      Senior Account Executive with 7+ years experience in consultative B2B sales and go-to-market strategies.
-      <br><br>
-      Currently: Lead AE @ LinkedIn
-      <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin)" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
-        </svg>
-      </a>
+      <div class="line">
+        Senior Account Executive with 7+ years experience in consultative B2B sales and go-to-market strategies.
+      </div>
+
+      <div class="current-role">
+        <span>Currently: Lead AE @ LinkedIn</span>
+        <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin)" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -266,7 +282,7 @@
 
   <footer>
     <div class="footer-emoji">🎾</div>
-    <div class="footer-text">© 2026 Ben Genin · Built with Vercel</div>
+    <div class="footer-text">© 2025 Ben Genin · Built with Vercel</div>
   </footer>
 </body>
 </html>
