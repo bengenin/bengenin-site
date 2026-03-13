@@ -19,9 +19,10 @@
       --text-primary: #222;
       --text-secondary: #666;
       --text-tertiary: #888;
-      --divider-color: rgba(0,0,0,0.20);
+      --divider-color: rgba(0,0,0,0.18);
       --border-color: rgba(0,0,0,0.08);
       --shadow-lg: 0 8px 22px rgba(0,0,0,0.06);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
       --linkedin-blue: #0A66C2;
       --github-black: #111;
     }
@@ -90,29 +91,30 @@
     }
 
     nav {
-      margin-top: 32px;
+      margin-top: 34px;
     }
 
-    /* desktop nav */
+    /* DESKTOP NAV */
     .nav-row {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0;
     }
 
     .nav-item {
+      min-width: 180px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 12px 22px;
+      gap: 8px;
+      padding: 16px 18px;
       text-decoration: none;
       color: var(--text-primary);
       font-size: 18px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      transition: background 160ms ease, color 160ms ease;
+      border-radius: 10px;
+      transition: background 160ms ease, color 160ms ease, opacity 160ms ease;
     }
 
     .nav-item:hover,
@@ -124,9 +126,9 @@
 
     .nav-divider {
       width: 1px;
-      height: 44px;
+      height: 46px;
       background: var(--divider-color);
-      margin: 0 8px;
+      margin: 0 14px;
       flex-shrink: 0;
     }
 
@@ -142,26 +144,30 @@
       flex-shrink: 0;
     }
 
+    /* CTA hidden on desktop */
     .cta {
+      display: none;
       margin-top: 24px;
-      display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
-      border: 0;
-      background: transparent;
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.14);
+      background: var(--bg-secondary);
       color: var(--text-secondary);
       font-family: inherit;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
       cursor: pointer;
-      transition: opacity 0.18s ease;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.18s ease, opacity 0.18s ease;
     }
 
     .cta:hover,
     .cta:focus-visible {
-      opacity: 0.65;
+      background: #f0f0f0;
+      opacity: 0.95;
       outline: none;
     }
 
@@ -226,12 +232,21 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
       }
 
       .nav-item {
+        min-width: 0;
         padding: 4px 0;
         font-size: 18px;
+        border-radius: 0;
+      }
+
+      .nav-item:hover,
+      .nav-item:focus-visible {
+        background: transparent;
+        color: var(--text-primary);
+        opacity: 0.7;
       }
 
       .nav-divider {
@@ -242,9 +257,10 @@
         font-size: 18px;
       }
 
+      /* CTA visible on mobile only */
       .cta {
+        display: inline-flex;
         margin-top: 22px;
-        font-size: 15px;
       }
 
       .chat-block {
