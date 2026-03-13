@@ -9,103 +9,129 @@
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐣</text></svg>">
 
-  <!-- Gentle font -->
+  <!-- Gentle / elegant typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg-primary: #fafafa;
-      --bg-secondary: #ffffff;
-      --bg-hover: #f0f0f0;
-      --text-primary: #222;
-      --text-secondary: #555;
-      --text-tertiary: #888;
-      --text-muted: #999;
-      --border-color: rgba(0,0,0,0.06);
-      --border-input: rgba(0,0,0,0.14);
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 2px 4px rgba(0,0,0,0.06);
-      --shadow-lg: 0 8px 22px rgba(0,0,0,0.06);
-      --linkedin-blue: #0A66C2;
-      --github-black: #222;
+    :root{
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --border: rgba(0,0,0,0.12);
+      --divider: rgba(0,0,0,0.10);
+      --shadow: 0 1px 2px rgba(0,0,0,0.04);
+      --linkedin: #0A66C2;
     }
 
     html { scroll-behavior: smooth; }
 
-    body {
-      margin: 0;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
+      line-height: 1.6;
       font-size: 17px;
-      letter-spacing: 0.1px;
+      letter-spacing: 0.35px;
       padding: 60px 20px 100px;
-      text-align: center;
+      text-align:center;
     }
 
-    h1 {
-      font-size: 42px;
+    h1{
+      font-size: 44px;
       font-weight: 300;
-      margin: 0;
-      letter-spacing: -0.6px;
+      margin:0;
+      letter-spacing: -0.4px;
     }
-    h1 strong { font-weight: 700; }
+    h1 strong{ font-weight: 600; }
 
-    .tagline {
+    .tagline{
       margin-top: 18px;
-      color: var(--text-secondary);
+      color: var(--muted);
       font-size: 18px;
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.45;
+      font-weight: 300;
+      letter-spacing: 0.25px;
+      max-width: 680px;
+      margin-left:auto;
+      margin-right:auto;
+      line-height: 1.5;
     }
 
-    .tagline a { vertical-align: middle; }
-    .tagline-icon { margin-left: 4px; }
-
-    nav { margin-top: 32px; }
-
-    .links-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
-    }
-
-    .links-row .divider {
-      width: 1px;
-      height: 22px;
-      background: var(--text-muted);
-      opacity: 0.4;
-    }
-
-    .link {
-      font-size: 20px;
+    .tagline a{
+      vertical-align: middle;
       text-decoration: none;
-      color: var(--text-primary);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: opacity 0.15s ease;
     }
-    .link:hover { opacity: 0.7; }
-
-    .link-icon {
-      margin-left: 4px;
+    .tagline svg{
+      margin-left: 6px;
       vertical-align: -2px;
     }
 
+    /* “pillars” links */
+    nav{ margin-top: 34px; }
+
+    .pillars{
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      border: 1px solid var(--divider);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .pillar{
+      flex: 1;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      text-decoration: none;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 0.35px;
+
+      transition: background 180ms ease, color 180ms ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pillar + .pillar{
+      border-left: 1px solid var(--divider);
+    }
+
+    /* Hover behavior you want: black background, white text */
+    .pillar:hover,
+    .pillar:focus-visible{
+      background: #111;
+      color: #fff;
+      outline: none;
+    }
+
+    /* Make emoji/text follow the same color */
+    .pillar .icon{
+      font-size: 18px;
+      line-height: 1;
+      filter: grayscale(0);
+      transition: filter 180ms ease;
+    }
+
     /* CTA pill */
-    .cta {
-      margin-top: 24px;
+    .cta{
+      margin-top: 22px;
       font-size: 14px;
-      color: var(--text-secondary);
+      color: var(--muted);
       cursor: pointer;
       font-family: inherit;
 
@@ -116,78 +142,60 @@
       padding: 6px 14px;
 
       border-radius: 999px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-input);
-      box-shadow: var(--shadow-sm);
-      transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: background 0.2s ease, opacity 0.2s ease;
     }
-
-    .cta:hover {
-      background: var(--bg-hover);
-      box-shadow: var(--shadow-md);
-      opacity: 0.9;
-    }
-
-    .cta:focus-visible {
-      outline: 2px solid var(--text-primary);
-      outline-offset: 2px;
-    }
+    .cta:hover{ background: #f0f0f0; opacity: 0.95; }
+    .cta:focus-visible{ outline: 2px solid #111; outline-offset: 2px; }
 
     /* Chat section */
-    .chat-block {
+    .chat-block{
       margin-top: 140px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
     }
 
-    .chat-wrapper {
+    .chat-wrapper{
       width: 100%;
-      max-width: 640px;
-      background: var(--bg-secondary);
-      border-radius: 10px;
+      max-width: 760px;
+      background: var(--card);
+      border-radius: 12px;
       overflow: hidden;
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.06);
     }
 
-    .chat-wrapper iframe {
+    .chat-wrapper iframe{
       width: 100%;
-      height: 420px;
+      height: 360px;
       border: 0;
     }
 
-    footer { margin-top: 50px; }
+    footer{ margin-top: 46px; }
+    .footer-emoji{ font-size: 28px; opacity: 0.9; }
+    .footer-text{ margin-top: 12px; font-size: 13px; color: #888; letter-spacing: 0.2px; }
 
-    .footer-emoji {
-      font-size: 30px;
-      opacity: 0.9;
-    }
+    @media (max-width: 720px){
+      body{ padding: 40px 18px 80px; }
+      h1{ font-size: 36px; }
+      .tagline{ font-size: 17px; }
 
-    .footer-text {
-      margin-top: 14px;
-      font-size: 14px;
-      color: var(--text-tertiary);
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 40px 18px 80px; }
-      h1 { font-size: 34px; }
-      .tagline { font-size: 17px; }
-
-      .links-row {
+      .pillars{
         flex-direction: column;
-        gap: 10px;
+        border-radius: 18px;
+        max-width: 420px;
       }
-      .links-row .divider { display: none; }
-      .link { font-size: 19px; }
+      .pillar + .pillar{
+        border-left: none;
+        border-top: 1px solid var(--divider);
+      }
 
-      .cta { margin-top: 34px; }
-
-      .chat-block { margin-top: 120px; }
-      .chat-wrapper iframe { height: 360px; }
-      footer { margin-top: 36px; }
+      .chat-block{ margin-top: 120px; }
+      .chat-wrapper iframe{ height: 320px; }
+      footer{ margin-top: 34px; }
     }
   </style>
 </head>
@@ -201,8 +209,7 @@
       <br><br>
       Currently: Lead AE @ LinkedIn
       <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
-        <svg class="tagline-icon" width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-          xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin)" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
         </svg>
       </a>
@@ -210,36 +217,29 @@
   </header>
 
   <nav aria-label="Main navigation">
-    <div class="links-row">
-      <a class="link"
+    <div class="pillars">
+      <a class="pillar"
          href="mailto:ben.genin8@gmail.com?subject=Resume%20request&body=Hi%20Ben,%0A%0AI%20would%20like%20to%20receive%20a%20copy%20of%20your%20resume.%0A%0AThanks,%0A%3CName%3E%0A%3CCompany%3E%0A%3CEmail%3E">
-        cv 📝
+        <span class="label">cv</span><span class="icon">📝</span>
       </a>
 
-      <div class="divider"></div>
-
-      <a class="link" href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer">
-        linkedin
-        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"
-          xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <a class="pillar" href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer">
+        <span class="label">linkedin</span>
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin)" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
         </svg>
       </a>
 
-      <div class="divider"></div>
-
-      <a class="link"
+      <a class="pillar"
          href="mailto:ben.genin8@gmail.com?subject=Website%20inquiry&body=Hi%20Ben,%0A%0AReaching%20out%20from%20your%20website.%0A%0A%3CYour%20message%3E%0A%0AThanks,%0A%3CName%3E%0A%3CCompany%3E%0A%3CEmail%3E">
-        contact ✉️
+        <span class="label">contact</span><span class="icon">✉️</span>
       </a>
 
-      <div class="divider"></div>
-
-      <a class="link" href="https://github.com/bengenin" target="_blank" rel="noopener noreferrer">
-        github
-        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"
+      <a class="pillar" href="https://github.com/bengenin" target="_blank" rel="noopener noreferrer">
+        <span class="label">github</span>
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg">
-          <path fill="var(--github-black)"
+          <path fill="currentColor"
             d="M12 .5C5.73.5.75 5.6.75 12c0 5.12 3.29 9.46 7.86 10.99.58.11.79-.26.79-.56v-2.07c-3.2.71-3.87-1.4-3.87-1.4-.52-1.37-1.27-1.73-1.27-1.73-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.22 1.76 1.22 1.02 1.8 2.68 1.28 3.33.98.1-.76.4-1.28.72-1.58-2.55-.3-5.23-1.31-5.23-5.83 0-1.29.45-2.35 1.19-3.18-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.97.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.89 1.19 3.18 0 4.53-2.69 5.53-5.25 5.83.41.37.78 1.09.78 2.2v3.25c0 .31.21.68.8.56A11.3 11.3 0 0 0 23.25 12C23.25 5.6 18.27.5 12 .5Z"/>
         </svg>
       </a>
