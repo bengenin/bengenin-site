@@ -136,6 +136,20 @@
       margin-left: 4px;
       vertical-align: -2px;
       flex-shrink: 0;
+      transition: fill 160ms ease;
+    }
+
+    .nav-item .link-icon.icon-linkedin {
+      fill: var(--linkedin-blue);
+    }
+
+    .nav-item .link-icon.icon-github {
+      fill: var(--github-black);
+    }
+
+    .nav-item:hover .link-icon,
+    .nav-item:focus-visible .link-icon {
+      fill: #fff;
     }
 
     .emoji-icon {
@@ -249,6 +263,16 @@
         opacity: 0.7;
       }
 
+      .nav-item:hover .link-icon.icon-linkedin,
+      .nav-item:focus-visible .link-icon.icon-linkedin {
+        fill: var(--linkedin-blue);
+      }
+
+      .nav-item:hover .link-icon.icon-github,
+      .nav-item:focus-visible .link-icon.icon-github {
+        fill: var(--github-black);
+      }
+
       .nav-divider {
         display: none;
       }
@@ -311,7 +335,7 @@
 
       <a class="nav-item" href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer">
         <span>linkedin</span>
-        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin-blue)"
+        <svg class="link-icon icon-linkedin" width="16" height="16" viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
         </svg>
@@ -329,9 +353,9 @@
 
       <a class="nav-item" href="https://github.com/bengenin" target="_blank" rel="noopener noreferrer">
         <span>github</span>
-        <svg class="link-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"
+        <svg class="link-icon icon-github" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg">
-          <path fill="var(--github-black)"
+          <path
             d="M12 .5C5.73.5.75 5.6.75 12c0 5.12 3.29 9.46 7.86 10.99.58.11.79-.26.79-.56v-2.07c-3.2.71-3.87-1.4-3.87-1.4-.52-1.37-1.27-1.73-1.27-1.73-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.22 1.76 1.22 1.02 1.8 2.68 1.28 3.33.98.1-.76.4-1.28.72-1.58-2.55-.3-5.23-1.31-5.23-5.83 0-1.29.45-2.35 1.19-3.18-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.97.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.89 1.19 3.18 0 4.53-2.69 5.53-5.25 5.83.41.37.78 1.09.78 2.2v3.25c0 .31.21.68.8.56A11.3 11.3 0 0 0 23.25 12C23.25 5.6 18.27.5 12 .5Z"/>
         </svg>
       </a>
