@@ -339,7 +339,7 @@
 
     .footer-emoji {
       position: fixed;
-      bottom: 26px;
+      bottom: 44px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 18px;
@@ -350,11 +350,13 @@
     .footer-text {
       position: fixed;
       bottom: 28px;
-      right: 28px;
+      left: 50%;
+      transform: translateX(-50%);
       margin: 0;
       font-size: 13px;
       color: var(--text-tertiary);
       letter-spacing: 0.2px;
+      white-space: nowrap;
     }
 
     /* Dark mode overrides */
@@ -506,13 +508,12 @@
       }
 
       .footer-emoji {
-        bottom: 18px;
+        bottom: 38px;
         font-size: 16px;
       }
 
       .footer-text {
         bottom: 20px;
-        right: 20px;
         font-size: 12px;
       }
 
