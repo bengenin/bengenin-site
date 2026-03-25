@@ -446,7 +446,7 @@
       }
 
       .tagline {
-        font-size: 17px;
+        font-size: 15px;
         gap: 10px;
       }
 
@@ -483,14 +483,13 @@
         font-size: 18px;
       }
 
-      /* CTA visible on mobile only */
       .cta {
-        display: inline-flex;
-        margin-top: 22px;
+        display: none;
       }
 
       .chat-block {
-        margin-top: 80px;
+        margin-top: 60px;
+        margin-bottom: 80px;
       }
 
       .chat-msg {
@@ -500,7 +499,15 @@
 
       .chat-input {
         font-size: 15px;
-        padding: 16px 18px 10px;
+        padding: 12px 16px;
+      }
+
+      .chat-input-footer {
+        display: none;
+      }
+
+      .chat-input-box {
+        border-radius: 999px;
       }
 
       footer {
@@ -508,12 +515,15 @@
       }
 
       .footer-emoji {
-        bottom: 52px;
-        font-size: 24px;
+        position: static;
+        transform: none;
+        font-size: 22px;
       }
 
       .footer-text {
-        bottom: 20px;
+        position: static;
+        transform: none;
+        margin-top: 10px;
         font-size: 12px;
       }
 
