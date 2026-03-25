@@ -25,10 +25,35 @@
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
       --linkedin-blue: #0A66C2;
       --github-black: #111;
+      --nav-hover-bg: #111;
+      --nav-hover-text: #fff;
+      --toggle-surface: #f7f7f7;
+      --toggle-track-off: #d2d2d2;
+      --toggle-track-on: #2ac157;
+      --toggle-thumb: #fff;
     }
 
     html {
       scroll-behavior: smooth;
+    }
+
+    body[data-theme="dark"] {
+      --bg-primary: #07090d;
+      --bg-secondary: #0f131b;
+      --text-primary: #eceef5;
+      --text-secondary: #b3bac7;
+      --text-tertiary: #8e96a6;
+      --divider-color: rgba(255,255,255,0.16);
+      --border-color: rgba(255,255,255,0.09);
+      --shadow-lg: 0 10px 24px rgba(0,0,0,0.42);
+      --shadow-sm: 0 2px 6px rgba(0,0,0,0.28);
+      --github-black: #eceef5;
+      --nav-hover-bg: #f4f6ff;
+      --nav-hover-text: #0b1020;
+      --toggle-surface: #0a0f17;
+      --toggle-track-off: #2a3140;
+      --toggle-track-on: #2ac157;
+      --toggle-thumb: #fff;
     }
 
     body {
@@ -40,8 +65,79 @@
       line-height: 1.5;
       font-size: 17px;
       letter-spacing: 0.2px;
-      padding: 60px 20px 100px;
+      padding: 32px 20px 100px;
       text-align: center;
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .theme-toggle-wrap {
+      max-width: 980px;
+      margin: 0 auto 14px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--toggle-surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+      transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .theme-toggle svg {
+      width: 15px;
+      height: 15px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .theme-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      min-width: 70px;
+      text-align: left;
+    }
+
+    .theme-switch {
+      appearance: none;
+      width: 42px;
+      height: 24px;
+      border-radius: 999px;
+      border: none;
+      background: var(--toggle-track-off);
+      position: relative;
+      margin: 0;
+      cursor: pointer;
+      transition: background-color 180ms ease;
+    }
+
+    .theme-switch::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--toggle-thumb);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 180ms ease;
+    }
+
+    .theme-switch:checked {
+      background: var(--toggle-track-on);
+    }
+
+    .theme-switch:checked::before {
+      transform: translateX(18px);
     }
 
     h1 {
@@ -119,8 +215,8 @@
 
     .nav-item:hover,
     .nav-item:focus-visible {
-      background: #111;
-      color: #fff;
+      background: var(--nav-hover-bg);
+      color: var(--nav-hover-text);
       outline: none;
     }
 
@@ -149,7 +245,7 @@
 
     .nav-item:hover .link-icon,
     .nav-item:focus-visible .link-icon {
-      fill: #fff;
+      fill: var(--nav-hover-text);
     }
 
     .emoji-icon {
@@ -180,7 +276,7 @@
 
     .cta:hover,
     .cta:focus-visible {
-      background: #f0f0f0;
+      background: color-mix(in srgb, var(--bg-secondary) 70%, var(--text-primary) 30%);
       opacity: 0.95;
       outline: none;
     }
@@ -225,8 +321,38 @@
     }
 
     @media (max-width: 720px) {
+      .theme-toggle-wrap {
+        margin-bottom: 8px;
+      }
+
+      .theme-toggle {
+        gap: 8px;
+        padding: 5px 8px;
+      }
+
+      .theme-label {
+        font-size: 12px;
+        min-width: 64px;
+      }
+
+      .theme-switch {
+        width: 38px;
+        height: 22px;
+      }
+
+      .theme-switch::before {
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+      }
+
+      .theme-switch:checked::before {
+        transform: translateX(16px);
+      }
+
       body {
-        padding: 40px 18px 80px;
+        padding: 18px 18px 80px;
       }
 
       h1 {
@@ -303,6 +429,16 @@
 </head>
 
 <body>
+  <div class="theme-toggle-wrap">
+    <div class="theme-toggle">
+      <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path id="theme-icon-path" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span id="theme-label" class="theme-label">Light Mode</span>
+      <input id="theme-switch" class="theme-switch" type="checkbox" role="switch" aria-label="Toggle dark mode">
+    </div>
+  </div>
+
   <header>
     <h1><strong>ben</strong>genin</h1>
 
@@ -384,5 +520,30 @@
     <div class="footer-emoji">🎾</div>
     <div class="footer-text">© 2026 Ben Genin · Built with Vercel</div>
   </footer>
+
+  <script>
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const savedTheme = localStorage.getItem("theme");
+    const themeSwitch = document.getElementById("theme-switch");
+    const themeLabel = document.getElementById("theme-label");
+    const themeIconPath = document.getElementById("theme-icon-path");
+
+    const sunPath = "M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.41-1.41M7.05 7.05 5.64 5.64m12.72 0-1.41 1.41M7.05 16.95l-1.41 1.41M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z";
+    const moonPath = "M21 12.79A9 9 0 1 1 11.21 3c0 .35-.03.7-.08 1.04A7 7 0 0 0 19.96 12c.35-.05.69-.08 1.04-.08Z";
+
+    const setTheme = (theme) => {
+      const isDark = theme === "dark";
+      document.body.setAttribute("data-theme", theme);
+      themeSwitch.checked = isDark;
+      themeLabel.textContent = isDark ? "Dark Mode" : "Light Mode";
+      themeIconPath.setAttribute("d", isDark ? moonPath : sunPath);
+      localStorage.setItem("theme", theme);
+    };
+
+    setTheme(savedTheme || (prefersDark ? "dark" : "light"));
+    themeSwitch.addEventListener("change", () => {
+      setTheme(themeSwitch.checked ? "dark" : "light");
+    });
+  </script>
 </body>
 </html>
