@@ -338,8 +338,13 @@
     }
 
     .footer-emoji {
-      font-size: 28px;
+      position: fixed;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
       opacity: 0.9;
+      z-index: 100;
     }
 
     .footer-text {
@@ -498,6 +503,11 @@
 
       footer {
         margin-top: 34px;
+      }
+
+      .footer-emoji {
+        bottom: 18px;
+        font-size: 16px;
       }
 
       .footer-text {
