@@ -194,7 +194,7 @@
     }
 
     .chat-block {
-      margin-top: 140px;
+      margin-top: 100px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -202,24 +202,23 @@
 
     .chat-wrapper {
       width: 100%;
-      max-width: 760px;
-      background: var(--bg-secondary);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-lg);
+      max-width: 620px;
       display: flex;
       flex-direction: column;
-      height: 380px;
+      gap: 12px;
     }
 
     .chat-messages {
-      flex: 1;
+      max-height: 300px;
       overflow-y: auto;
-      padding: 24px 24px 12px;
-      display: flex;
+      display: none;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
+      padding: 0 4px;
+    }
+
+    .chat-messages.has-messages {
+      display: flex;
     }
 
     .chat-messages::-webkit-scrollbar {
@@ -241,61 +240,55 @@
       font-weight: 300;
       line-height: 1.5;
       letter-spacing: 0.1px;
+      text-align: left;
     }
 
     .chat-msg.assistant {
       align-self: flex-start;
-      color: var(--text-primary);
+      color: var(--text-secondary);
     }
 
     .chat-msg.user {
       align-self: flex-end;
-      background: var(--text-primary);
-      color: var(--bg-primary);
-      padding: 10px 16px;
-      border-radius: 18px 18px 4px 18px;
+      color: var(--text-primary);
+      font-weight: 400;
     }
 
-    .chat-msg.assistant .msg-text {
-      background: var(--bg-primary);
-      padding: 10px 16px;
-      border-radius: 18px 18px 18px 4px;
-    }
-
-    .chat-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px 16px;
-      border-top: 1px solid var(--border-color);
+    .chat-input-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
     }
 
     .chat-input {
-      flex: 1;
-      border: 1px solid var(--border-color);
-      border-radius: 999px;
-      padding: 10px 18px;
+      width: 100%;
+      border: none;
+      padding: 20px 24px 12px;
       font-family: inherit;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      background: var(--bg-primary);
+      background: transparent;
       color: var(--text-primary);
       outline: none;
-      transition: border-color 160ms ease;
+      box-sizing: border-box;
     }
 
     .chat-input::placeholder {
       color: var(--text-tertiary);
     }
 
-    .chat-input:focus {
-      border-color: var(--divider-color);
+    .chat-input-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 8px 16px 14px;
     }
 
     .chat-send {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: none;
       background: var(--text-primary);
@@ -313,23 +306,23 @@
     }
 
     .chat-send:disabled {
-      opacity: 0.3;
+      opacity: 0.2;
       cursor: default;
     }
 
     .chat-send svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
     }
 
     .typing-dot {
       display: inline-block;
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: var(--text-tertiary);
       animation: typingPulse 1.2s infinite;
-      margin-right: 4px;
+      margin-right: 3px;
     }
 
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -487,20 +480,17 @@
       }
 
       .chat-block {
-        margin-top: 120px;
-      }
-
-      .chat-wrapper {
-        height: 340px;
-      }
-
-      .chat-messages {
-        padding: 18px 16px 10px;
+        margin-top: 80px;
       }
 
       .chat-msg {
         font-size: 14px;
         max-width: 90%;
+      }
+
+      .chat-input {
+        font-size: 15px;
+        padding: 16px 18px 10px;
       }
 
       footer {
@@ -595,19 +585,17 @@
 
     <section id="chat-section" class="chat-block" aria-label="Interactive chat">
       <div class="chat-wrapper">
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg assistant">
-            <div class="msg-text">Hi! Ask anything about Ben.</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <form class="chat-input-box" id="chat-form" autocomplete="off">
+          <input class="chat-input" id="chat-input" type="text" placeholder="Ask anything about Ben..." aria-label="Type a message" />
+          <div class="chat-input-footer">
+            <button class="chat-send" type="submit" id="chat-send" aria-label="Send message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
           </div>
-        </div>
-        <form class="chat-input-row" id="chat-form" autocomplete="off">
-          <input class="chat-input" id="chat-input" type="text" placeholder="Message..." aria-label="Type a message" />
-          <button class="chat-send" type="submit" id="chat-send" aria-label="Send message">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
         </form>
       </div>
     </section>
@@ -661,29 +649,21 @@
       }
 
       function addMessage(role, text) {
+        messages.classList.add('has-messages');
         var div = document.createElement('div');
         div.className = 'chat-msg ' + role;
-        if (role === 'assistant') {
-          var inner = document.createElement('div');
-          inner.className = 'msg-text';
-          inner.textContent = text;
-          div.appendChild(inner);
-        } else {
-          div.textContent = text;
-        }
+        div.textContent = text;
         messages.appendChild(div);
         scrollToBottom();
         return div;
       }
 
       function showTyping() {
+        messages.classList.add('has-messages');
         var div = document.createElement('div');
         div.className = 'chat-msg assistant';
         div.id = 'typing-indicator';
-        var inner = document.createElement('div');
-        inner.className = 'msg-text';
-        inner.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
-        div.appendChild(inner);
+        div.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
         messages.appendChild(div);
         scrollToBottom();
       }
@@ -718,7 +698,6 @@
           if (!res.ok) throw new Error('Request failed');
 
           var assistantDiv = addMessage('assistant', '');
-          var msgText = assistantDiv.querySelector('.msg-text');
           var fullText = '';
 
           var reader = res.body.getReader();
@@ -742,11 +721,11 @@
                 var parsed = JSON.parse(data);
                 if (parsed.text) {
                   fullText += parsed.text;
-                  msgText.textContent = fullText;
+                  assistantDiv.textContent = fullText;
                   scrollToBottom();
                 }
                 if (parsed.error) {
-                  msgText.textContent = 'Sorry, something went wrong. Please try again.';
+                  assistantDiv.textContent = 'Sorry, something went wrong. Please try again.';
                 }
               } catch (err) {}
             }
