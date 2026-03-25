@@ -65,16 +65,16 @@
       line-height: 1.5;
       font-size: 17px;
       letter-spacing: 0.2px;
-      padding: 32px 20px 100px;
+      padding: 72px 20px 100px;
       text-align: center;
       transition: background-color 200ms ease, color 200ms ease;
     }
 
     .theme-toggle-wrap {
-      max-width: 980px;
-      margin: 0 auto 10px;
-      display: flex;
-      justify-content: flex-start;
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + 10px);
+      left: 10px;
+      z-index: 20;
     }
 
     .theme-toggle {
@@ -324,7 +324,8 @@
 
     @media (max-width: 720px) {
       .theme-toggle-wrap {
-        margin-bottom: 6px;
+        top: calc(env(safe-area-inset-top, 0px) + 8px);
+        left: 8px;
       }
 
       .theme-toggle {
@@ -354,7 +355,7 @@
       }
 
       body {
-        padding: 18px 18px 80px;
+        padding: 64px 18px 80px;
       }
 
       h1 {
