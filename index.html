@@ -12,6 +12,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 
+  <script>
+    (function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+
   <style>
     :root {
       --bg-primary: #fafafa;
@@ -25,6 +29,24 @@
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
       --linkedin-blue: #0A66C2;
       --github-black: #111;
+      --toggle-track: #ccc;
+      --toggle-knob: #fff;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #141414;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --text-tertiary: #707070;
+      --divider-color: rgba(255,255,255,0.14);
+      --border-color: rgba(255,255,255,0.08);
+      --shadow-lg: 0 8px 22px rgba(0,0,0,0.3);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+      --linkedin-blue: #4d9de0;
+      --github-black: #e8e8e8;
+      --toggle-track: #555;
+      --toggle-knob: #fff;
     }
 
     html {
@@ -210,6 +232,83 @@
       letter-spacing: 0.2px;
     }
 
+    /* Dark mode overrides */
+    [data-theme="dark"] .nav-item:hover,
+    [data-theme="dark"] .nav-item:focus-visible {
+      background: #e8e8e8;
+      color: #141414;
+    }
+
+    [data-theme="dark"] .cta {
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    [data-theme="dark"] .cta:hover,
+    [data-theme="dark"] .cta:focus-visible {
+      background: #2a2a2a;
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      letter-spacing: 0.2px;
+      z-index: 100;
+      transition: opacity 160ms ease;
+    }
+
+    .theme-toggle:hover {
+      opacity: 0.7;
+    }
+
+    .toggle-icon {
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .toggle-label {
+      white-space: nowrap;
+    }
+
+    .toggle-track {
+      width: 36px;
+      height: 20px;
+      background: var(--toggle-track);
+      border-radius: 999px;
+      position: relative;
+      flex-shrink: 0;
+      transition: background 200ms ease;
+    }
+
+    .toggle-knob {
+      width: 16px;
+      height: 16px;
+      background: var(--toggle-knob);
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 200ms ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    [data-theme="dark"] .toggle-knob {
+      transform: translateX(16px);
+    }
+
     @media (max-width: 720px) {
       body {
         padding: 40px 18px 80px;
@@ -273,6 +372,16 @@
 
       footer {
         margin-top: 34px;
+      }
+
+      .theme-toggle {
+        bottom: 20px;
+        left: 20px;
+        font-size: 13px;
+      }
+
+      .toggle-icon {
+        font-size: 13px;
       }
     }
   </style>
@@ -360,5 +469,35 @@
     <div class="footer-emoji">🎾</div>
     <div class="footer-text">© 2026 Ben Genin · Built with Vercel</div>
   </footer>
+  <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+    <span class="toggle-icon">☀︎</span>
+    <span class="toggle-label">Light Mode</span>
+    <span class="toggle-track"><span class="toggle-knob"></span></span>
+  </button>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector('.theme-toggle');
+      var icon = toggle.querySelector('.toggle-icon');
+      var label = toggle.querySelector('.toggle-label');
+      var stored = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored || (prefersDark ? 'dark' : 'light');
+
+      function apply(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        icon.textContent = t === 'dark' ? '☾' : '☀︎';
+        label.textContent = t === 'dark' ? 'Dark Mode' : 'Light Mode';
+        localStorage.setItem('theme', t);
+      }
+
+      apply(theme);
+
+      toggle.addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-theme');
+        apply(current === 'dark' ? 'light' : 'dark');
+      });
+    })();
+  </script>
 </body>
 </html>
