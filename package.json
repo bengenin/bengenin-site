@@ -1,6 +1,6 @@
 {
   "private": true,
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0"
+    "@anthropic-ai/sdk": "^0.52.0"
   }
 }
