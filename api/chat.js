@@ -146,6 +146,10 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Messages array required" });
   }
 
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: "API key not configured" });
+  }
+
   try {
     const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
@@ -165,6 +169,6 @@ module.exports = async function handler(req, res) {
     res.status(200).json({ text });
   } catch (err) {
     console.error("Chat API error:", err);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ error: err.message || "Something went wrong" });
   }
 };

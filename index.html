@@ -742,14 +742,17 @@
 
           removeTyping();
 
-          if (!res.ok) throw new Error('Request failed');
-
           var data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.error || 'Request failed');
+          }
+
           addMessage('assistant', data.text);
           history.push({ role: 'assistant', content: data.text });
         } catch (err) {
           removeTyping();
-          addMessage('assistant', 'Sorry, something went wrong. Please try again.');
+          addMessage('assistant', 'Error: ' + err.message);
         }
 
         sendBtn.disabled = false;

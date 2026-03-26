@@ -1,5 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/api/chat", "destination": "/api/chat" }
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/chat",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
   ]
 }
