@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+const Anthropic = require("@anthropic-ai/sdk").default;
 
 const SYSTEM_PROMPT = `You are Ben Genin's personal AI assistant embedded on bengenin.com. Your sole purpose is to answer questions about Ben based on the reference document below. You represent Ben professionally and personally.
 
@@ -135,7 +135,7 @@ Ben values clarity, systems thinking and people who take their craft seriously. 
 
 const client = new Anthropic();
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -146,15 +146,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Messages array required" });
   }
 
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
   try {
-    const stream = await client.messages.create({
+    const response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 512,
-      stream: true,
       system: SYSTEM_PROMPT,
       messages: messages.map((m) => ({
         role: m.role,
@@ -162,26 +157,14 @@ export default async function handler(req, res) {
       })),
     });
 
-    for await (const event of stream) {
-      if (
-        event.type === "content_block_delta" &&
-        event.delta.type === "text_delta"
-      ) {
-        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
-      }
-    }
+    const text = response.content
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("");
 
-    res.write("data: [DONE]\n\n");
-    res.end();
+    res.status(200).json({ text });
   } catch (err) {
     console.error("Chat API error:", err);
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Something went wrong" });
-    } else {
-      res.write(
-        `data: ${JSON.stringify({ error: "Something went wrong" })}\n\n`
-      );
-      res.end();
-    }
+    res.status(500).json({ error: "Something went wrong" });
   }
-}
+};

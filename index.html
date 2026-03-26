@@ -206,15 +206,19 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      overflow: hidden;
     }
 
     .chat-messages {
       max-height: 300px;
       overflow-y: auto;
+      overflow-x: hidden;
       display: none;
       flex-direction: column;
       gap: 12px;
       padding: 0 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .chat-messages.has-messages {
@@ -241,6 +245,8 @@
       line-height: 1.5;
       letter-spacing: 0.1px;
       text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .chat-msg.assistant {
@@ -738,41 +744,9 @@
 
           if (!res.ok) throw new Error('Request failed');
 
-          var assistantDiv = addMessage('assistant', '');
-          var fullText = '';
-
-          var reader = res.body.getReader();
-          var decoder = new TextDecoder();
-          var buffer = '';
-
-          while (true) {
-            var result = await reader.read();
-            if (result.done) break;
-
-            buffer += decoder.decode(result.value, { stream: true });
-            var lines = buffer.split('\n');
-            buffer = lines.pop();
-
-            for (var i = 0; i < lines.length; i++) {
-              var line = lines[i].trim();
-              if (!line.startsWith('data: ')) continue;
-              var data = line.slice(6);
-              if (data === '[DONE]') continue;
-              try {
-                var parsed = JSON.parse(data);
-                if (parsed.text) {
-                  fullText += parsed.text;
-                  assistantDiv.textContent = fullText;
-                  scrollToBottom();
-                }
-                if (parsed.error) {
-                  assistantDiv.textContent = 'Sorry, something went wrong. Please try again.';
-                }
-              } catch (err) {}
-            }
-          }
-
-          history.push({ role: 'assistant', content: fullText });
+          var data = await res.json();
+          addMessage('assistant', data.text);
+          history.push({ role: 'assistant', content: data.text });
         } catch (err) {
           removeTyping();
           addMessage('assistant', 'Sorry, something went wrong. Please try again.');
