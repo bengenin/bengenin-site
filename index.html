@@ -258,6 +258,10 @@
       align-self: flex-end;
       color: var(--text-primary);
       font-weight: 400;
+      background: var(--bg-secondary);
+      padding: 8px 14px;
+      border-radius: 14px 14px 4px 14px;
+      border: 1px solid var(--border-color);
     }
 
     .chat-input-box {
@@ -634,7 +638,7 @@
       <div class="chat-wrapper">
         <div class="chat-messages" id="chat-messages"></div>
         <form class="chat-input-box" id="chat-form" autocomplete="off">
-          <input class="chat-input" id="chat-input" type="text" placeholder="Ask anything about Ben..." aria-label="Type a message" />
+          <input class="chat-input" id="chat-input" type="text" placeholder="Ask about Ben's background, career, experience..." aria-label="Type a message" />
           <div class="chat-input-footer">
             <button class="chat-send" type="submit" id="chat-send" aria-label="Send message">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -752,7 +756,7 @@
           history.push({ role: 'assistant', content: data.text });
         } catch (err) {
           removeTyping();
-          addMessage('assistant', 'Error: ' + err.message);
+          addMessage('assistant', 'Sorry, something went wrong. Please try again.');
         }
 
         sendBtn.disabled = false;
