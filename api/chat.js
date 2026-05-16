@@ -135,17 +135,56 @@ He is exploring a direct-to-consumer men's tennis apparel brand focused on susta
 ### 10. The Through Line
 Ben values clarity, systems thinking and people who take their craft seriously. He moves fast and expects logic behind decisions. He has a history of overachieving in environments that reward effort and strategic thinking, from junior tennis rankings to back-to-back promotions to President's Club recognition. If there is a system behind something, he wants to understand it. If it can be built better, he wants to build it.`;
 
-const client = new Anthropic();
+const CHAT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
+
+function getRequestBody(req) {
+  if (typeof req.body === "string") {
+    return JSON.parse(req.body || "{}");
+  }
+
+  return req.body || {};
+}
+
+function normalizeMessages(messages) {
+  return messages
+    .filter((message) =>
+      message &&
+      (message.role === "user" || message.role === "assistant") &&
+      typeof message.content === "string" &&
+      message.content.trim()
+    )
+    .map((message) => ({
+      role: message.role,
+      content: message.content.trim(),
+    }));
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { messages } = req.body;
+  let body;
+
+  try {
+    body = getRequestBody(req);
+  } catch (err) {
+    return res.status(400).json({ error: "Invalid JSON body" });
+  }
+
+  const { messages } = body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: "Messages array required" });
+  }
+
+  const normalizedMessages = normalizeMessages(messages);
+
+  if (
+    normalizedMessages.length === 0 ||
+    normalizedMessages[normalizedMessages.length - 1].role !== "user"
+  ) {
+    return res.status(400).json({ error: "A user message is required" });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -153,14 +192,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
+      model: CHAT_MODEL,
       max_tokens: 512,
       system: SYSTEM_PROMPT,
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
+      messages: normalizedMessages,
     });
 
     const text = response.content
@@ -168,9 +205,17 @@ module.exports = async function handler(req, res) {
       .map((b) => b.text)
       .join("");
 
-    res.status(200).json({ text });
+    if (!text) {
+      return res.status(502).json({ error: "No text response returned" });
+    }
+
+    return res.status(200).json({ text });
   } catch (err) {
     console.error("Chat API error:", err);
-    res.status(500).json({ error: err.message || "Something went wrong" });
+
+    const status =
+      Number.isInteger(err.status) && err.status >= 400 ? err.status : 500;
+
+    return res.status(status).json({ error: "Unable to generate a chat response" });
   }
 };
