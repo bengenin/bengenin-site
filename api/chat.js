@@ -187,12 +187,21 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "A user message is required" });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: "API key not configured" });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({
+      error: "API key not configured",
+      debug: {
+        envKeys: Object.keys(process.env).filter((k) =>
+          k.toLowerCase().includes("anthropic") || k.toLowerCase().includes("api")
+        ),
+        hasKey: false,
+      },
+    });
   }
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const client = new Anthropic({ apiKey });
     const response = await client.messages.create({
       model: CHAT_MODEL,
       max_tokens: 512,
@@ -216,6 +225,17 @@ module.exports = async function handler(req, res) {
     const status =
       Number.isInteger(err.status) && err.status >= 400 ? err.status : 500;
 
-    return res.status(status).json({ error: "Unable to generate a chat response" });
+    return res.status(status).json({
+      error: "Unable to generate a chat response",
+      debug: {
+        model: CHAT_MODEL,
+        message: err && err.message ? String(err.message) : String(err),
+        name: err && err.name ? err.name : undefined,
+        status: err && err.status ? err.status : undefined,
+        type: err && err.error && err.error.type ? err.error.type : undefined,
+        keyLength: apiKey.length,
+        keyPrefix: apiKey.slice(0, 7),
+      },
+    });
   }
 };
