@@ -664,6 +664,39 @@
 
   <script>
     (function () {
+      var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+      if (!isMobile) return;
+
+      var links = document.querySelectorAll('a[href*="linkedin.com/in/"]');
+      links.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          var webUrl = link.href;
+          var match = webUrl.match(/linkedin\.com\/in\/([^\/?#]+)/);
+          if (!match) return;
+
+          e.preventDefault();
+          var appUrl = 'linkedin://in/' + match[1];
+
+          var fallbackTimer = setTimeout(function () {
+            window.location.href = webUrl;
+          }, 1500);
+
+          var onVisibilityChange = function () {
+            if (document.hidden) {
+              clearTimeout(fallbackTimer);
+              document.removeEventListener('visibilitychange', onVisibilityChange);
+            }
+          };
+          document.addEventListener('visibilitychange', onVisibilityChange);
+
+          window.location.href = appUrl;
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
       var toggle = document.querySelector('.theme-toggle');
       var icon = toggle.querySelector('.toggle-icon');
       var label = toggle.querySelector('.toggle-label');
