@@ -135,7 +135,7 @@ He is exploring a direct-to-consumer men's tennis apparel brand focused on susta
 ### 10. The Through Line
 Ben values clarity, systems thinking and people who take their craft seriously. He moves fast and expects logic behind decisions. He has a history of overachieving in environments that reward effort and strategic thinking, from junior tennis rankings to back-to-back promotions to President's Club recognition. If there is a system behind something, he wants to understand it. If it can be built better, he wants to build it.`;
 
-const CHAT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
+const CHAT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
 
 function getRequestBody(req) {
   if (typeof req.body === "string") {
