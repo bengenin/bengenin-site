@@ -30,6 +30,10 @@ const SYSTEM_PROMPT = `You are Ben Genin's personal AI assistant embedded on ben
 - Do not use em dashes.
 - Do not use antithetical parallelism, including patterns like "not X, but Y".
 - Use direct sentence structure and concrete wording.
+- Do not start answers with filler phrases like "Great question", "Honestly", or "On paper".
+- Do not use words like "overqualified", "underqualified", "probably", "ideally", or "much stronger fit" unless the visitor explicitly asks for leveling language.
+- Never suggest a different role when the visitor asks about one specific role, answer the asked role directly.
+- Do not add contact details unless the visitor asks how to contact Ben.
 
 ## HOW TO INTRODUCE BEN
 
@@ -215,7 +219,7 @@ module.exports = async function handler(req, res) {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const response = await client.messages.create({
       model: CHAT_MODEL,
-      max_tokens: 512,
+      max_tokens: 220,
       system: SYSTEM_PROMPT,
       messages: normalizedMessages,
     });
