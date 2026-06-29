@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Raleway:wght@200;300;400;500;700&display=swap" rel="stylesheet">
 
   <script>
     (function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)})();
@@ -23,6 +23,7 @@
       --text-primary: #222;
       --text-secondary: #666;
       --text-tertiary: #888;
+      --name-color: #111;
       --divider-color: rgba(0,0,0,0.18);
       --border-color: rgba(0,0,0,0.08);
       --shadow-lg: 0 8px 22px rgba(0,0,0,0.06);
@@ -39,6 +40,7 @@
       --text-primary: #e8e8e8;
       --text-secondary: #a0a0a0;
       --text-tertiary: #707070;
+      --name-color: #f0f0f0;
       --divider-color: rgba(255,255,255,0.14);
       --border-color: rgba(255,255,255,0.08);
       --shadow-lg: 0 8px 22px rgba(0,0,0,0.3);
@@ -67,14 +69,17 @@
     }
 
     h1 {
-      font-size: 42px;
-      font-weight: 300;
       margin: 0;
-      letter-spacing: -0.4px;
+      color: var(--name-color);
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: 50px;
+      font-weight: 600;
+      line-height: 0.95;
+      letter-spacing: -0.8px;
     }
 
     h1 strong {
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .tagline {
@@ -457,7 +462,7 @@
       }
 
       h1 {
-        font-size: 34px;
+        font-size: 42px;
       }
 
       .tagline {
