@@ -96,20 +96,33 @@
     .tagline-title,
     .tagline-skills {
       display: block;
+      color: var(--text-primary);
+      font-weight: 300;
+      letter-spacing: 0.2px;
     }
 
     .current-role {
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
     }
 
-    .current-role a {
+    .role-company,
+    .current-role a,
+    .role-location {
       display: inline-flex;
       align-items: center;
       text-decoration: none;
       vertical-align: middle;
+    }
+
+    .role-company {
+      gap: 6px;
     }
 
     .tagline-icon {
@@ -461,8 +474,13 @@
       }
 
       .tagline {
-        font-size: 17px;
+        font-size: 16px;
         gap: 10px;
+      }
+
+      .current-role {
+        flex-direction: column;
+        gap: 4px;
       }
 
       nav {
@@ -578,17 +596,20 @@
     <div class="tagline">
       <div class="line">
         <span class="tagline-title">Senior Account Executive</span>
-        <span class="tagline-skills">B2B sales, GTM strategy, Revenue growth</span>
+        <span class="tagline-skills">B2B Sales, GTM Strategy, and Revenue Growth</span>
       </div>
 
       <div class="current-role">
-        <span>Currently: Lead AE @ LinkedIn</span>
-        <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+        <span class="role-company">
+          <span>Currently: Lead AE @ LinkedIn</span>
+          <a href="https://www.linkedin.com/in/ben-genin/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
           <svg class="tagline-icon" width="16" height="16" viewBox="0 0 24 24" fill="var(--linkedin-blue)"
             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M4.98 3.5C4.98 4.61 4.09 5.5 2.98 5.5C1.87 5.5 0.98 4.61 0.98 3.5C0.98 2.39 1.87 1.5 2.98 1.5C4.09 1.5 4.98 2.39 4.98 3.5ZM0.99 8H4.99V23H0.99V8ZM8.99 8H12.79V10.02H12.85C13.38 9.08 14.64 8 16.62 8C21.1 8 22 10.94 22 15.05V23H18V15.93C18 13.8 17.96 11.12 15.29 11.12C12.59 11.12 12.2 13.39 12.2 15.78V23H8.2V8H8.99Z"/>
           </svg>
-        </a>
+          </a>
+        </span>
+        <span class="role-location"><span aria-hidden="true">📍</span> Dublin</span>
       </div>
     </div>
   </header>
