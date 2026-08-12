@@ -1,0 +1,648 @@
+<title>Cold Start</title>
+
+<style>
+  /* ------------------------------------------------------------------
+     COLD START — CRT entrance animation prototype
+     Tuning lives in the CONFIG block at the top of the <script> below.
+     ------------------------------------------------------------------ */
+
+  /* --- Placeholder homepage tokens (theme-aware, 3-state) ----------- */
+  :root {
+    --page-bg:    #ebedec;
+    --page-fg:    #1b1e1d;
+    --page-muted: #6e7573;
+    --page-rule:  rgba(27, 30, 29, 0.14);
+
+    /* --- Intro world: deliberately committed, never theme-flipped --- */
+    --crt-void:   #161918;
+    --crt-haze:   #1f2422;
+    --crt-screen: #0b0d0c;
+    --crt-frame:  rgba(163, 186, 173, 0.62);
+    --crt-glow:   rgba(150, 180, 165, 0.24);
+    --crt-text:   #e6e2d8;
+
+    /* --- Control rig: self-contained dark pill, works on any ground -- */
+    --rig-bg:     rgba(17, 20, 19, 0.90);
+    --rig-fg:     #cfd6d2;
+    --rig-dim:    #7f8a86;
+    --rig-line:   rgba(159, 179, 168, 0.22);
+    --rig-accent: #9fb3a8;
+
+    --font-display: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    /* Written by applyConfig() in JS — do not hand-edit */
+    --panel-w: 360px;
+    --panel-ar: 1.6;
+    --fade-ms: 700ms;
+    --text-in-ms: 260ms;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page-bg:    #1a1d1c;
+      --page-fg:    #e4e6e5;
+      --page-muted: #8d9694;
+      --page-rule:  rgba(255, 255, 255, 0.13);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --page-bg:    #1a1d1c;
+    --page-fg:    #e4e6e5;
+    --page-muted: #8d9694;
+    --page-rule:  rgba(255, 255, 255, 0.13);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--page-bg);
+    color: var(--page-fg);
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--rig-accent);
+    outline-offset: 2px;
+  }
+
+  /* ================================================================
+     Placeholder homepage — revealed under the intro
+     ================================================================ */
+  .page {
+    min-height: 100dvh;
+    display: grid;
+    place-content: center;
+    justify-items: start;
+    gap: 22px;
+    padding: 40px 28px;
+    max-width: 620px;
+    margin-inline: auto;
+  }
+
+  .page__mark {
+    font-size: clamp(26px, 5vw, 34px);
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    margin: 0;
+  }
+
+  .page__line {
+    margin: 0;
+    max-width: 42ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--page-muted);
+  }
+
+  .page__rule {
+    width: 100%;
+    height: 1px;
+    background: var(--page-rule);
+  }
+
+  .page__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 14px;
+  }
+
+  .page__nav a {
+    color: var(--page-fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--page-rule);
+    padding-bottom: 2px;
+    transition: border-color 160ms ease;
+  }
+
+  .page__nav a:hover { border-bottom-color: currentColor; }
+
+  .page__note {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--page-muted);
+  }
+
+  /* ================================================================
+     Intro overlay
+     ================================================================ */
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    background: var(--crt-void);
+    opacity: 1;
+    transition: opacity var(--fade-ms) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Faint pool of light behind the panel — the room, not an effect */
+  .intro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 60% 45% at 50% 50%,
+      var(--crt-haze) 0%,
+      var(--crt-void) 70%
+    );
+  }
+
+  .intro.is-leaving { opacity: 0; }
+  .intro.is-done { display: none; }
+
+  /* Held for one frame on replay so nothing eases back to its start state */
+  .intro.is-resetting,
+  .intro.is-resetting * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .screen {
+    position: relative;
+    width: var(--panel-w);
+    aspect-ratio: var(--panel-ar);
+    container-type: size;
+    background: var(--crt-screen);
+    border: 1px solid var(--crt-frame);
+    box-shadow:
+      0 0 0 4px rgba(0, 0, 0, 0.28),
+      0 0 44px -6px var(--crt-glow);
+  }
+
+  .screen__static {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    opacity: 1;
+  }
+
+  .intro.is-text .screen__static { opacity: 0; }
+
+  /* Brief settle as the picture takes hold — a lit tube, not a glitch */
+  .screen__bloom {
+    position: absolute;
+    inset: 0;
+    background: #efeade;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .intro.is-text .screen__bloom {
+    animation: bloom 280ms cubic-bezier(0.2, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes bloom {
+    0%   { opacity: 0.22; }
+    100% { opacity: 0; }
+  }
+
+  .screen__greeting {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: 0 6cqw;
+    font-size: clamp(11px, 7cqw, 28px);
+    font-weight: 300;
+    letter-spacing: -0.018em;
+    color: var(--crt-text);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(3px);
+    transition:
+      opacity var(--text-in-ms) ease,
+      transform var(--text-in-ms) cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .intro.is-text .screen__greeting {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Corner falloff — CRT curvature without distorting anything */
+  .screen__glass {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 26px -6px rgba(0, 0, 0, 0.65);
+  }
+
+  /* ================================================================
+     Control rig — outside the experience, on purpose
+     ================================================================ */
+  .rig {
+    position: fixed;
+    z-index: 20;
+    right: 16px;
+    bottom: 16px;
+    width: 268px;
+    max-width: calc(100vw - 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--font-mono);
+    color: var(--rig-fg);
+  }
+
+  .rig__bar {
+    display: flex;
+    gap: 8px;
+  }
+
+  .rig__btn {
+    flex: 1;
+    appearance: none;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--rig-fg);
+    background: var(--rig-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--rig-line);
+    border-radius: 2px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+
+  .rig__btn:hover {
+    border-color: var(--rig-accent);
+    color: #fff;
+  }
+
+  .rig__panel {
+    background: var(--rig-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--rig-line);
+    border-radius: 2px;
+  }
+
+  .rig__panel > summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    color: var(--rig-dim);
+    transition: color 150ms ease;
+  }
+
+  .rig__panel > summary::-webkit-details-marker { display: none; }
+  .rig__panel > summary:hover { color: var(--rig-fg); }
+  .rig__panel[open] > summary {
+    color: var(--rig-fg);
+    border-bottom: 1px solid var(--rig-line);
+  }
+
+  .rig__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 12px;
+  }
+
+  .knob {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 4px 8px;
+  }
+
+  .knob__label {
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--rig-dim);
+  }
+
+  .knob__value {
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--rig-fg);
+  }
+
+  .knob input[type="range"] {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+    height: 14px;
+    accent-color: var(--rig-accent);
+    cursor: pointer;
+  }
+
+  .rig__total {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rig-line);
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--rig-dim);
+  }
+
+  .rig__total b {
+    font-weight: 400;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+    color: var(--rig-fg);
+  }
+
+  @media (max-width: 520px) {
+    .rig { left: 12px; right: 12px; bottom: 12px; width: auto; }
+  }
+
+  /* ================================================================
+     Reduced motion — no flicker, no travel, opacity only
+     ================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .screen__greeting {
+      transform: none;
+      transition: opacity 200ms linear;
+    }
+    .intro.is-text .screen__bloom { animation: none; }
+    .page__nav a { transition: none; }
+  }
+</style>
+
+<main class="page">
+  <h1 class="page__mark">Ben Genin</h1>
+  <p class="page__line">
+    Placeholder homepage. This block stands in for the real site so the
+    intro has something to hand off to.
+  </p>
+  <div class="page__rule"></div>
+  <nav class="page__nav">
+    <a href="#work">Work</a>
+    <a href="#writing">Writing</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <p class="page__note">Prototype — intro only</p>
+</main>
+
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="screen">
+    <canvas class="screen__static" id="static"></canvas>
+    <div class="screen__bloom"></div>
+    <p class="screen__greeting">Hi, I&rsquo;m Ben</p>
+    <div class="screen__glass"></div>
+  </div>
+</div>
+
+<div class="rig">
+  <div class="rig__bar">
+    <button class="rig__btn" id="replay" type="button">Replay intro</button>
+  </div>
+  <details class="rig__panel">
+    <summary>Tuning</summary>
+    <div class="rig__body" id="knobs">
+      <!-- knobs are built from CONFIG below -->
+      <div class="rig__total"><span>Total</span><b id="total">—</b></div>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==================================================================
+     CONFIG — the only place you need to touch to retune the sequence.
+     Every value is live-editable from the Tuning panel too; these are
+     the defaults the page loads and the Reset button returns to.
+     ================================================================== */
+  const DEFAULTS = {
+    staticDuration:  1300,  // ms of blocky television static
+    textDuration:    900,   // ms holding "Hi, I'm Ben"
+    fadeDuration:    700,   // ms for the whole intro to fade away
+    panelWidth:      360,   // px wide (capped at 78vw on small screens)
+    panelAspect:     1.60,  // width : height — 1.6 is a wide, low rectangle
+    staticPixelSize: 13,    // px per chunky static cell — bigger = blockier
+  };
+
+  /* Static rendering character — analog imperfection, not glitch. */
+  const STATIC = {
+    fps:       20,       // noise refresh rate; ~20 reads analog, 60 reads digital
+    gutter:    1,        // px of dark gap between cells (the mosaic look)
+    base:      "#0b0d0c",// what shows through the gutters
+    // Warm bone ramp sampled from the reference panel, dark → bright.
+    // Red leads green leads blue at every step — that is what keeps it
+    // reading as bone rather than olive.
+    ramp: ["#1b1a17", "#37352e", "#605c52", "#8f8a7e", "#bcb6a8", "#e9e4d7"],
+    gammaMid:  0.98,     // >1 biases dark, <1 biases bright
+    gammaSwing: 0.16,    // slow breathing of overall brightness
+    bandDepth: 0.12,     // strength of the drifting horizontal bands
+  };
+
+  const TEXT_IN_MS = 260; // greeting fade-in, folded into textDuration
+
+  /* ================================================================== */
+
+  const cfg = Object.assign({}, DEFAULTS);
+
+  const intro    = document.getElementById("intro");
+  const canvas   = document.getElementById("static");
+  const ctx      = canvas.getContext("2d");
+  const replayBtn = document.getElementById("replay");
+  const totalOut = document.getElementById("total");
+  const knobHost = document.getElementById("knobs");
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  let cols = 0, rows = 0, gutterPx = 1;
+  let rafId = null;
+  let timers = [];
+  let bandPhase = 0;
+
+  /* ---------- Config → CSS custom properties ---------------------- */
+  function applyConfig() {
+    const root = document.documentElement.style;
+    root.setProperty("--panel-w", "min(" + cfg.panelWidth + "px, 78vw)");
+    root.setProperty("--panel-ar", String(cfg.panelAspect));
+    root.setProperty("--fade-ms", cfg.fadeDuration + "ms");
+    root.setProperty("--text-in-ms", TEXT_IN_MS + "ms");
+    totalOut.textContent =
+      ((cfg.staticDuration + cfg.textDuration + cfg.fadeDuration) / 1000).toFixed(2) + "s";
+  }
+
+  /* ---------- Canvas sizing --------------------------------------- */
+  function sizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+
+    cols = Math.max(4, Math.round(rect.width / cfg.staticPixelSize));
+    rows = Math.max(3, Math.round(rect.height / cfg.staticPixelSize));
+    gutterPx = STATIC.gutter * dpr;
+  }
+
+  /* ---------- One frame of chunky television snow ------------------ */
+  function drawNoise(t) {
+    const w = canvas.width, h = canvas.height;
+    if (!w || !h) return;
+
+    ctx.fillStyle = STATIC.base;
+    ctx.fillRect(0, 0, w, h);
+
+    const cw = w / cols;
+    const ch = h / rows;
+    const levels = STATIC.ramp.length;
+
+    // Overall brightness breathes slowly, with a little frame-to-frame drift
+    const gamma =
+      STATIC.gammaMid +
+      STATIC.gammaSwing * Math.sin(t * 0.0027) +
+      (Math.random() - 0.5) * 0.05;
+
+    bandPhase += 0.06;
+
+    for (let y = 0; y < rows; y++) {
+      // Soft horizontal banding drifting down the panel
+      const band = 1 + STATIC.bandDepth * Math.sin(y * 0.9 + bandPhase);
+      const rowGamma = gamma * band;
+      const py = Math.round(y * ch);
+      const rh = Math.max(1, Math.round(ch - gutterPx));
+
+      for (let x = 0; x < cols; x++) {
+        let idx = Math.floor(Math.pow(Math.random(), rowGamma) * levels);
+        if (idx >= levels) idx = levels - 1;
+        ctx.fillStyle = STATIC.ramp[idx];
+        ctx.fillRect(
+          Math.round(x * cw), py,
+          Math.max(1, Math.round(cw - gutterPx)), rh
+        );
+      }
+    }
+  }
+
+  /* ---------- Sequence -------------------------------------------- */
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+
+  function runStatic(duration, done) {
+    const started = performance.now();
+    const interval = 1000 / STATIC.fps;
+    let last = -Infinity;
+
+    function frame(now) {
+      if (now - started >= duration) { rafId = null; done(); return; }
+      if (now - last >= interval) { drawNoise(now); last = now; }
+      rafId = requestAnimationFrame(frame);
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function play() {
+    clearTimers();
+
+    // Snap back to the opening state without animating the rewind
+    intro.classList.add("is-resetting");
+    intro.classList.remove("is-done", "is-leaving", "is-text");
+    void intro.offsetWidth;
+    intro.classList.remove("is-resetting");
+
+    applyConfig();
+    sizeCanvas();
+
+    const finish = () => {
+      at(cfg.textDuration, () => {
+        intro.classList.add("is-leaving");
+        at(cfg.fadeDuration, () => intro.classList.add("is-done"));
+      });
+    };
+
+    if (reduced.matches) {
+      // No flicker: one still frame, straight to the greeting.
+      drawNoise(performance.now());
+      at(160, () => { intro.classList.add("is-text"); finish(); });
+      return;
+    }
+
+    runStatic(cfg.staticDuration, () => {
+      intro.classList.add("is-text");
+      finish();
+    });
+  }
+
+  /* ---------- Tuning knobs ---------------------------------------- */
+  const KNOBS = [
+    { key: "staticDuration",  label: "Static",     min: 200, max: 3000, step: 50,   unit: "ms" },
+    { key: "textDuration",    label: "Text hold",  min: 200, max: 3000, step: 50,   unit: "ms" },
+    { key: "fadeDuration",    label: "Fade out",   min: 100, max: 2000, step: 50,   unit: "ms" },
+    { key: "panelWidth",      label: "Width",      min: 180, max: 720,  step: 10,   unit: "px" },
+    { key: "panelAspect",     label: "Aspect",     min: 1,   max: 2.6,  step: 0.05, unit: ":1" },
+    { key: "staticPixelSize", label: "Pixel size", min: 4,   max: 28,   step: 1,    unit: "px" },
+  ];
+
+  const totalRow = knobHost.firstElementChild;
+
+  KNOBS.forEach(function (k) {
+    const wrap = document.createElement("label");
+    wrap.className = "knob";
+
+    const name = document.createElement("span");
+    name.className = "knob__label";
+    name.textContent = k.label;
+
+    const out = document.createElement("span");
+    out.className = "knob__value";
+
+    const input = document.createElement("input");
+    input.type = "range";
+    input.min = k.min; input.max = k.max; input.step = k.step;
+    input.value = cfg[k.key];
+
+    const render = function () {
+      const v = cfg[k.key];
+      out.textContent = (k.step < 1 ? v.toFixed(2) : v) + k.unit;
+    };
+
+    input.addEventListener("input", function () {
+      cfg[k.key] = parseFloat(input.value);
+      render();
+      applyConfig();
+      sizeCanvas();
+    });
+
+    render();
+    wrap.append(name, out, input);
+    knobHost.insertBefore(wrap, totalRow);
+  });
+
+  /* ---------- Wiring ---------------------------------------------- */
+  replayBtn.addEventListener("click", play);
+
+  window.addEventListener("resize", function () {
+    applyConfig();
+    sizeCanvas();
+  });
+
+  applyConfig();
+  play();
+})();
+</script>
