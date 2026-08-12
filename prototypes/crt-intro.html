@@ -3,6 +3,11 @@
 <style>
   /* ------------------------------------------------------------------
      COLD START — CRT entrance animation prototype
+
+     One canvas, one grid of chunky cells. The same pixels that scramble
+     as television snow settle into the words. Nothing is ever swapped
+     for a text layer.
+
      Tuning lives in the CONFIG block at the top of the <script> below.
      ------------------------------------------------------------------ */
 
@@ -19,7 +24,6 @@
     --crt-screen: #0b0d0c;
     --crt-frame:  rgba(163, 186, 173, 0.62);
     --crt-glow:   rgba(150, 180, 165, 0.24);
-    --crt-text:   #e6e2d8;
 
     /* --- Control rig: self-contained dark pill, works on any ground -- */
     --rig-bg:     rgba(17, 20, 19, 0.90);
@@ -32,10 +36,9 @@
     --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
     /* Written by applyConfig() in JS — do not hand-edit */
-    --panel-w: 360px;
+    --panel-w: 420px;
     --panel-ar: 1.6;
-    --fade-ms: 700ms;
-    --text-in-ms: 260ms;
+    --fade-ms: 600ms;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -163,14 +166,12 @@
   .intro.is-resetting,
   .intro.is-resetting * {
     transition: none !important;
-    animation: none !important;
   }
 
   .screen {
     position: relative;
     width: var(--panel-w);
     aspect-ratio: var(--panel-ar);
-    container-type: size;
     background: var(--crt-screen);
     border: 1px solid var(--crt-frame);
     box-shadow:
@@ -178,57 +179,12 @@
       0 0 44px -6px var(--crt-glow);
   }
 
-  .screen__static {
+  .screen__grid {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     display: block;
-    opacity: 1;
-  }
-
-  .intro.is-text .screen__static { opacity: 0; }
-
-  /* Brief settle as the picture takes hold — a lit tube, not a glitch */
-  .screen__bloom {
-    position: absolute;
-    inset: 0;
-    background: #efeade;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .intro.is-text .screen__bloom {
-    animation: bloom 280ms cubic-bezier(0.2, 0, 0.2, 1) forwards;
-  }
-
-  @keyframes bloom {
-    0%   { opacity: 0.22; }
-    100% { opacity: 0; }
-  }
-
-  .screen__greeting {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    display: grid;
-    place-items: center;
-    padding: 0 6cqw;
-    font-size: clamp(11px, 7cqw, 28px);
-    font-weight: 300;
-    letter-spacing: -0.018em;
-    color: var(--crt-text);
-    text-align: center;
-    opacity: 0;
-    transform: translateY(3px);
-    transition:
-      opacity var(--text-in-ms) ease,
-      transform var(--text-in-ms) cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-
-  .intro.is-text .screen__greeting {
-    opacity: 1;
-    transform: none;
   }
 
   /* Corner falloff — CRT curvature without distorting anything */
@@ -256,14 +212,9 @@
     color: var(--rig-fg);
   }
 
-  .rig__bar {
-    display: flex;
-    gap: 8px;
-  }
-
   .rig__btn {
-    flex: 1;
     appearance: none;
+    width: 100%;
     font: inherit;
     font-size: 11px;
     letter-spacing: 0.09em;
@@ -346,6 +297,18 @@
     cursor: pointer;
   }
 
+  .knob input[type="text"] {
+    grid-column: 1 / -1;
+    font: inherit;
+    font-size: 12px;
+    color: var(--rig-fg);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--rig-line);
+    border-radius: 2px;
+    padding: 6px 8px;
+    width: 100%;
+  }
+
   .rig__total {
     display: flex;
     justify-content: space-between;
@@ -369,15 +332,7 @@
     .rig { left: 12px; right: 12px; bottom: 12px; width: auto; }
   }
 
-  /* ================================================================
-     Reduced motion — no flicker, no travel, opacity only
-     ================================================================ */
   @media (prefers-reduced-motion: reduce) {
-    .screen__greeting {
-      transform: none;
-      transition: opacity 200ms linear;
-    }
-    .intro.is-text .screen__bloom { animation: none; }
     .page__nav a { transition: none; }
   }
 </style>
@@ -399,17 +354,13 @@
 
 <div class="intro" id="intro" aria-hidden="true">
   <div class="screen">
-    <canvas class="screen__static" id="static"></canvas>
-    <div class="screen__bloom"></div>
-    <p class="screen__greeting">Hi, I&rsquo;m Ben</p>
+    <canvas class="screen__grid" id="grid"></canvas>
     <div class="screen__glass"></div>
   </div>
 </div>
 
 <div class="rig">
-  <div class="rig__bar">
-    <button class="rig__btn" id="replay" type="button">Replay intro</button>
-  </div>
+  <button class="rig__btn" id="replay" type="button">Replay intro</button>
   <details class="rig__panel">
     <summary>Tuning</summary>
     <div class="rig__body" id="knobs">
@@ -426,47 +377,74 @@
   /* ==================================================================
      CONFIG — the only place you need to touch to retune the sequence.
      Every value is live-editable from the Tuning panel too; these are
-     the defaults the page loads and the Reset button returns to.
+     the defaults the page loads with.
      ================================================================== */
   const DEFAULTS = {
-    staticDuration:  1300,  // ms of blocky television static
-    textDuration:    900,   // ms holding "Hi, I'm Ben"
-    fadeDuration:    700,   // ms for the whole intro to fade away
-    panelWidth:      360,   // px wide (capped at 78vw on small screens)
-    panelAspect:     1.60,  // width : height — 1.6 is a wide, low rectangle
-    staticPixelSize: 13,    // px per chunky static cell — bigger = blockier
+    greeting:        "Hi, I'm Ben",
+    scrambleDuration: 1200, // ms of pure television snow before anything forms
+    resolveDuration:  400,  // ms for the snow to settle into the words
+    holdDuration:     800,  // ms holding the formed name
+    fadeDuration:     600,  // ms for the whole intro to fade away
+    panelWidth:       420,  // px wide (capped at 78vw on small screens)
+    panelAspect:      1.60, // width : height — 1.6 is a wide, low rectangle
+    cellSize:         7,    // px per chunky cell — bigger = blockier, less legible
   };
 
   /* Static rendering character — analog imperfection, not glitch. */
   const STATIC = {
-    fps:       20,       // noise refresh rate; ~20 reads analog, 60 reads digital
-    gutter:    1,        // px of dark gap between cells (the mosaic look)
-    base:      "#0b0d0c",// what shows through the gutters
+    fps:        20,       // cell refresh rate; ~20 reads analog, 60 reads digital
+    gutter:     1,        // px of dark gap between cells (the mosaic look)
+    base:       "#0b0d0c",// what shows through the gutters
     // Warm bone ramp sampled from the reference panel, dark → bright.
     // Red leads green leads blue at every step — that is what keeps it
     // reading as bone rather than olive.
     ramp: ["#1b1a17", "#37352e", "#605c52", "#8f8a7e", "#bcb6a8", "#e9e4d7"],
-    gammaMid:  0.98,     // >1 biases dark, <1 biases bright
-    gammaSwing: 0.16,    // slow breathing of overall brightness
-    bandDepth: 0.12,     // strength of the drifting horizontal bands
+    gammaMid:   0.98,     // >1 biases the snow dark, <1 biases it bright
+    gammaSwing: 0.16,     // slow breathing of overall brightness
+    bandDepth:  0.12,     // strength of the drifting horizontal bands
+    // The name has to survive being drawn in cells. Below this many
+    // columns it stops being readable, so on narrow screens the cells
+    // shrink rather than the name breaking up.
+    minCols:    54,
+    // How long a single cell spends flickering between snow and its
+    // final value, as a fraction of resolveDuration. Higher = softer settle.
+    settleBand: 0.35,
+    // Chance per frame that a settled cell twitches one step — the screen
+    // stays alive under the name instead of freezing into a bitmap.
+    residual:   0.05,
   };
 
-  const TEXT_IN_MS = 260; // greeting fade-in, folded into textDuration
+  /* How the name is rasterised onto the cell grid. */
+  const TEXT = {
+    weight:     500,   // heavier strokes survive the downsample better
+    tracking:   "0.06em", // letters need air at this resolution
+    widthFrac:  0.84,  // fraction of panel width the name spans
+    maxHeightFrac: 0.30, // ceiling on cap height, as a fraction of panel height
+    gamma:      1.15,  // >1 darkens half-lit edge cells, keeping the letterforms crisp
+  };
+
+  const FONT_STACK = '"Helvetica Neue", Helvetica, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  const SS = 4; // supersampling factor when rasterising the name
 
   /* ================================================================== */
 
   const cfg = Object.assign({}, DEFAULTS);
 
-  const intro    = document.getElementById("intro");
-  const canvas   = document.getElementById("static");
-  const ctx      = canvas.getContext("2d");
+  const intro     = document.getElementById("intro");
+  const canvas    = document.getElementById("grid");
+  const ctx       = canvas.getContext("2d");
   const replayBtn = document.getElementById("replay");
-  const totalOut = document.getElementById("total");
-  const knobHost = document.getElementById("knobs");
+  const totalOut  = document.getElementById("total");
+  const knobHost  = document.getElementById("knobs");
+
+  const off  = document.createElement("canvas");
+  const octx = off.getContext("2d", { willReadFrequently: true });
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  let cols = 0, rows = 0, gutterPx = 1;
+  let cols = 0, rows = 0, cellW = 0, cellH = 0, gutterPx = 1;
+  let target = null;   // per-cell ramp index the name resolves to
+  let settleAt = null; // per-cell moment (0..1) it stops being snow
   let rafId = null;
   let timers = [];
   let bandPhase = 0;
@@ -477,36 +455,101 @@
     root.setProperty("--panel-w", "min(" + cfg.panelWidth + "px, 78vw)");
     root.setProperty("--panel-ar", String(cfg.panelAspect));
     root.setProperty("--fade-ms", cfg.fadeDuration + "ms");
-    root.setProperty("--text-in-ms", TEXT_IN_MS + "ms");
-    totalOut.textContent =
-      ((cfg.staticDuration + cfg.textDuration + cfg.fadeDuration) / 1000).toFixed(2) + "s";
+    const total = cfg.scrambleDuration + cfg.resolveDuration +
+                  cfg.holdDuration + cfg.fadeDuration;
+    totalOut.textContent = (total / 1000).toFixed(2) + "s";
   }
 
-  /* ---------- Canvas sizing --------------------------------------- */
-  function sizeCanvas() {
+  /* ---------- Grid geometry --------------------------------------- */
+  function layout() {
     const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    if (!rect.width || !rect.height) return false;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width  = Math.round(rect.width * dpr);
     canvas.height = Math.round(rect.height * dpr);
 
-    cols = Math.max(4, Math.round(rect.width / cfg.staticPixelSize));
-    rows = Math.max(3, Math.round(rect.height / cfg.staticPixelSize));
+    // Cells stay square, and never grow so large that the name breaks up
+    const cell = Math.min(cfg.cellSize, rect.width / STATIC.minCols);
+    cols = Math.max(8, Math.round(rect.width / cell));
+    rows = Math.max(5, Math.round(rect.height / cell));
+
+    cellW = canvas.width / cols;
+    cellH = canvas.height / rows;
     gutterPx = STATIC.gutter * dpr;
+    return true;
   }
 
-  /* ---------- One frame of chunky television snow ------------------ */
-  function drawNoise(t) {
+  /* ---------- Rasterise the name onto the cell grid ---------------- */
+  function buildTarget() {
+    const w = cols * SS, h = rows * SS;
+    off.width = w;
+    off.height = h;
+
+    octx.clearRect(0, 0, w, h);
+    octx.fillStyle = "#fff";
+    octx.textAlign = "center";
+    octx.textBaseline = "middle";
+    if ("letterSpacing" in octx) octx.letterSpacing = TEXT.tracking;
+
+    // Size the type to span widthFrac of the panel, then cap its height
+    const text = cfg.greeting;
+    let size = h * 0.5;
+    octx.font = TEXT.weight + " " + size + "px " + FONT_STACK;
+    const measured = octx.measureText(text).width || 1;
+    size = Math.min(size * ((w * TEXT.widthFrac) / measured),
+                    h * TEXT.maxHeightFrac / 0.72);
+    octx.font = TEXT.weight + " " + size + "px " + FONT_STACK;
+    octx.fillText(text, w / 2, h / 2);
+
+    // Average each SS×SS block into one cell's coverage, so edge cells
+    // land on mid-ramp tones instead of hard-clipping to on/off
+    const data = octx.getImageData(0, 0, w, h).data;
+    const levels = STATIC.ramp.length;
+    target = new Uint8Array(cols * rows);
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        let sum = 0;
+        for (let j = 0; j < SS; j++) {
+          const row = (y * SS + j) * w;
+          for (let i = 0; i < SS; i++) {
+            sum += data[((row + x * SS + i) << 2) + 3];
+          }
+        }
+        const cov = sum / (SS * SS * 255);
+        target[y * cols + x] = Math.min(
+          levels - 1,
+          Math.round(Math.pow(cov, TEXT.gamma) * (levels - 1))
+        );
+      }
+    }
+  }
+
+  /* Each cell gets its own moment to stop scrambling, so the name
+     precipitates out of the snow rather than cutting in. */
+  function seedSettle() {
+    settleAt = new Float32Array(cols * rows);
+    const span = 1 - STATIC.settleBand;
+    for (let i = 0; i < settleAt.length; i++) {
+      settleAt[i] = Math.random() * span;
+    }
+  }
+
+  /* ---------- One frame -------------------------------------------
+     progress < 0  → pure snow
+     0 … 1         → cells settling onto the name
+     progress >= 1 → name held, with a little residual life
+     ---------------------------------------------------------------- */
+  function draw(t, progress) {
     const w = canvas.width, h = canvas.height;
     if (!w || !h) return;
 
     ctx.fillStyle = STATIC.base;
     ctx.fillRect(0, 0, w, h);
 
-    const cw = w / cols;
-    const ch = h / rows;
     const levels = STATIC.ramp.length;
+    const band = STATIC.settleBand;
 
     // Overall brightness breathes slowly, with a little frame-to-frame drift
     const gamma =
@@ -518,18 +561,34 @@
 
     for (let y = 0; y < rows; y++) {
       // Soft horizontal banding drifting down the panel
-      const band = 1 + STATIC.bandDepth * Math.sin(y * 0.9 + bandPhase);
-      const rowGamma = gamma * band;
-      const py = Math.round(y * ch);
-      const rh = Math.max(1, Math.round(ch - gutterPx));
+      const rowGamma = gamma * (1 + STATIC.bandDepth * Math.sin(y * 0.9 + bandPhase));
+      const py = Math.round(y * cellH);
+      const rh = Math.max(1, Math.round(cellH - gutterPx));
 
       for (let x = 0; x < cols; x++) {
-        let idx = Math.floor(Math.pow(Math.random(), rowGamma) * levels);
-        if (idx >= levels) idx = levels - 1;
+        const i = y * cols + x;
+        let idx;
+
+        // How far this particular cell is through its own settle
+        const local = progress < 0 ? -1 : (progress - settleAt[i]) / band;
+
+        if (local >= 1) {
+          idx = target[i];
+          // Residual twitch keeps the screen alive under the name
+          if (Math.random() < STATIC.residual) {
+            idx = Math.max(0, Math.min(levels - 1, idx + (Math.random() < 0.5 ? -1 : 1)));
+          }
+        } else if (local > 0 && Math.random() < local) {
+          idx = target[i];
+        } else {
+          idx = Math.floor(Math.pow(Math.random(), rowGamma) * levels);
+          if (idx >= levels) idx = levels - 1;
+        }
+
         ctx.fillStyle = STATIC.ramp[idx];
         ctx.fillRect(
-          Math.round(x * cw), py,
-          Math.max(1, Math.round(cw - gutterPx)), rh
+          Math.round(x * cellW), py,
+          Math.max(1, Math.round(cellW - gutterPx)), rh
         );
       }
     }
@@ -544,17 +603,12 @@
 
   function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
 
-  function runStatic(duration, done) {
-    const started = performance.now();
-    const interval = 1000 / STATIC.fps;
-    let last = -Infinity;
-
-    function frame(now) {
-      if (now - started >= duration) { rafId = null; done(); return; }
-      if (now - last >= interval) { drawNoise(now); last = now; }
-      rafId = requestAnimationFrame(frame);
-    }
-    rafId = requestAnimationFrame(frame);
+  function leave() {
+    intro.classList.add("is-leaving");
+    at(cfg.fadeDuration, () => {
+      clearTimers();
+      intro.classList.add("is-done");
+    });
   }
 
   function play() {
@@ -562,41 +616,54 @@
 
     // Snap back to the opening state without animating the rewind
     intro.classList.add("is-resetting");
-    intro.classList.remove("is-done", "is-leaving", "is-text");
+    intro.classList.remove("is-done", "is-leaving");
     void intro.offsetWidth;
     intro.classList.remove("is-resetting");
 
     applyConfig();
-    sizeCanvas();
-
-    const finish = () => {
-      at(cfg.textDuration, () => {
-        intro.classList.add("is-leaving");
-        at(cfg.fadeDuration, () => intro.classList.add("is-done"));
-      });
-    };
+    if (!layout()) return;
+    buildTarget();
+    seedSettle();
 
     if (reduced.matches) {
-      // No flicker: one still frame, straight to the greeting.
-      drawNoise(performance.now());
-      at(160, () => { intro.classList.add("is-text"); finish(); });
+      // No flicker: the name is simply already there.
+      draw(performance.now(), 1);
+      at(cfg.holdDuration, leave);
       return;
     }
 
-    runStatic(cfg.staticDuration, () => {
-      intro.classList.add("is-text");
-      finish();
-    });
+    const started = performance.now();
+    const interval = 1000 / STATIC.fps;
+    const scramble = cfg.scrambleDuration;
+    const resolve = Math.max(1, cfg.resolveDuration);
+    const until = scramble + resolve + cfg.holdDuration;
+    let last = -Infinity;
+
+    function frame(now) {
+      const elapsed = now - started;
+
+      if (now - last >= interval) {
+        const progress = elapsed < scramble ? -1 : (elapsed - scramble) / resolve;
+        draw(now, Math.min(progress, 1));
+        last = now;
+      }
+
+      if (elapsed >= until) { rafId = null; leave(); return; }
+      rafId = requestAnimationFrame(frame);
+    }
+    rafId = requestAnimationFrame(frame);
   }
 
   /* ---------- Tuning knobs ---------------------------------------- */
   const KNOBS = [
-    { key: "staticDuration",  label: "Static",     min: 200, max: 3000, step: 50,   unit: "ms" },
-    { key: "textDuration",    label: "Text hold",  min: 200, max: 3000, step: 50,   unit: "ms" },
-    { key: "fadeDuration",    label: "Fade out",   min: 100, max: 2000, step: 50,   unit: "ms" },
-    { key: "panelWidth",      label: "Width",      min: 180, max: 720,  step: 10,   unit: "px" },
-    { key: "panelAspect",     label: "Aspect",     min: 1,   max: 2.6,  step: 0.05, unit: ":1" },
-    { key: "staticPixelSize", label: "Pixel size", min: 4,   max: 28,   step: 1,    unit: "px" },
+    { key: "greeting",         label: "Name",     type: "text" },
+    { key: "scrambleDuration", label: "Scramble", min: 0,   max: 3000, step: 50,   unit: "ms" },
+    { key: "resolveDuration",  label: "Resolve",  min: 50,  max: 2000, step: 25,   unit: "ms" },
+    { key: "holdDuration",     label: "Hold",     min: 100, max: 3000, step: 50,   unit: "ms" },
+    { key: "fadeDuration",     label: "Fade out", min: 100, max: 2000, step: 50,   unit: "ms" },
+    { key: "panelWidth",       label: "Width",    min: 220, max: 760,  step: 10,   unit: "px" },
+    { key: "panelAspect",      label: "Aspect",   min: 1,   max: 2.8,  step: 0.05, unit: ":1" },
+    { key: "cellSize",         label: "Cell size",min: 3,   max: 20,   step: 1,    unit: "px" },
   ];
 
   const totalRow = knobHost.firstElementChild;
@@ -613,24 +680,36 @@
     out.className = "knob__value";
 
     const input = document.createElement("input");
-    input.type = "range";
-    input.min = k.min; input.max = k.max; input.step = k.step;
-    input.value = cfg[k.key];
 
-    const render = function () {
-      const v = cfg[k.key];
-      out.textContent = (k.step < 1 ? v.toFixed(2) : v) + k.unit;
-    };
+    if (k.type === "text") {
+      input.type = "text";
+      input.value = cfg[k.key];
+      input.addEventListener("input", function () {
+        cfg[k.key] = input.value;
+        if (layout()) { buildTarget(); }
+      });
+      wrap.append(name, out, input);
+    } else {
+      input.type = "range";
+      input.min = k.min; input.max = k.max; input.step = k.step;
+      input.value = cfg[k.key];
 
-    input.addEventListener("input", function () {
-      cfg[k.key] = parseFloat(input.value);
+      const render = function () {
+        const v = cfg[k.key];
+        out.textContent = (k.step < 1 ? v.toFixed(2) : v) + k.unit;
+      };
+
+      input.addEventListener("input", function () {
+        cfg[k.key] = parseFloat(input.value);
+        render();
+        applyConfig();
+        if (layout()) { buildTarget(); seedSettle(); }
+      });
+
       render();
-      applyConfig();
-      sizeCanvas();
-    });
+      wrap.append(name, out, input);
+    }
 
-    render();
-    wrap.append(name, out, input);
     knobHost.insertBefore(wrap, totalRow);
   });
 
@@ -639,7 +718,7 @@
 
   window.addEventListener("resize", function () {
     applyConfig();
-    sizeCanvas();
+    if (layout()) { buildTarget(); }
   });
 
   applyConfig();
