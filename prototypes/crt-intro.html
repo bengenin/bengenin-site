@@ -2,181 +2,111 @@
 
 <style>
   /* ------------------------------------------------------------------
-     COLD START — CRT entrance animation prototype
+     COLD START — CRT entrance for bengenin.com
 
-     One canvas, one grid of chunky cells. The same pixels that scramble
-     as television snow settle into the words. Nothing is ever swapped
-     for a text layer.
+     The panel is not an overlay. It is the site's hero: it resolves in
+     the middle of the viewport, lifts to its resting place at the top,
+     and the page assembles underneath it. One canvas throughout — the
+     same cells that scramble as snow settle into the name.
 
      Tuning lives in the CONFIG block at the top of the <script> below.
      ------------------------------------------------------------------ */
 
-  /* --- Placeholder homepage tokens (theme-aware, 3-state) ----------- */
   :root {
-    --page-bg:    #ebedec;
-    --page-fg:    #1b1e1d;
-    --page-muted: #6e7573;
-    --page-rule:  rgba(27, 30, 29, 0.14);
+    /* The whole site lives in the CRT's world — one committed palette,
+       painted explicitly so it holds on any host background. */
+    --void:     #141716;
+    --haze:     #1e2321;
+    --screen:   #0b0d0c;
+    --frame:    rgba(163, 186, 173, 0.55);
+    --glow:     rgba(150, 180, 165, 0.20);
 
-    /* --- Intro world: deliberately committed, never theme-flipped --- */
-    --crt-void:   #161918;
-    --crt-haze:   #1f2422;
-    --crt-screen: #0b0d0c;
-    --crt-frame:  rgba(163, 186, 173, 0.62);
-    --crt-glow:   rgba(150, 180, 165, 0.24);
+    --ink:      #e7e4db;  /* bone, pulled from the bright end of the ramp */
+    --ink-soft: #a5a89f;
+    --ink-dim:  #6f746f;
+    --rule:     rgba(196, 208, 199, 0.14);
+    --sage:     #9fb3a8;
 
-    /* --- Control rig: self-contained dark pill, works on any ground -- */
-    --rig-bg:     rgba(17, 20, 19, 0.90);
-    --rig-fg:     #cfd6d2;
-    --rig-dim:    #7f8a86;
-    --rig-line:   rgba(159, 179, 168, 0.22);
-    --rig-accent: #9fb3a8;
-
-    --font-display: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font: "Helvetica Neue", Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
     /* Written by applyConfig() in JS — do not hand-edit */
-    --panel-w: 420px;
-    --panel-ar: 1.6;
-    --fade-ms: 600ms;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --page-bg:    #1a1d1c;
-      --page-fg:    #e4e6e5;
-      --page-muted: #8d9694;
-      --page-rule:  rgba(255, 255, 255, 0.13);
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --page-bg:    #1a1d1c;
-    --page-fg:    #e4e6e5;
-    --page-muted: #8d9694;
-    --page-rule:  rgba(255, 255, 255, 0.13);
+    --panel-w: 560px;
+    --panel-ar: 3.4;
+    --settle-ms: 850ms;
   }
 
   * { box-sizing: border-box; }
 
+  html { scroll-behavior: smooth; }
+
   body {
     margin: 0;
     min-height: 100dvh;
-    background: var(--page-bg);
-    color: var(--page-fg);
-    font-family: var(--font-display);
+    background: var(--void);
+    color: var(--ink);
+    font-family: var(--font);
     -webkit-font-smoothing: antialiased;
   }
 
-  :focus-visible {
-    outline: 2px solid var(--rig-accent);
-    outline-offset: 2px;
-  }
-
-  /* ================================================================
-     Placeholder homepage — revealed under the intro
-     ================================================================ */
-  .page {
-    min-height: 100dvh;
-    display: grid;
-    place-content: center;
-    justify-items: start;
-    gap: 22px;
-    padding: 40px 28px;
-    max-width: 620px;
-    margin-inline: auto;
-  }
-
-  .page__mark {
-    font-size: clamp(26px, 5vw, 34px);
-    font-weight: 400;
-    letter-spacing: -0.022em;
-    margin: 0;
-  }
-
-  .page__line {
-    margin: 0;
-    max-width: 42ch;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--page-muted);
-  }
-
-  .page__rule {
-    width: 100%;
-    height: 1px;
-    background: var(--page-rule);
-  }
-
-  .page__nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    font-size: 14px;
-  }
-
-  .page__nav a {
-    color: var(--page-fg);
-    text-decoration: none;
-    border-bottom: 1px solid var(--page-rule);
-    padding-bottom: 2px;
-    transition: border-color 160ms ease;
-  }
-
-  .page__nav a:hover { border-bottom-color: currentColor; }
-
-  .page__note {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--page-muted);
-  }
-
-  /* ================================================================
-     Intro overlay
-     ================================================================ */
-  .intro {
+  /* A faint pool of light behind the panel — the room, not an effect */
+  body::before {
+    content: "";
     position: fixed;
     inset: 0;
-    z-index: 10;
-    display: grid;
-    place-items: center;
-    background: var(--crt-void);
-    opacity: 1;
-    transition: opacity var(--fade-ms) cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Faint pool of light behind the panel — the room, not an effect */
-  .intro::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+    z-index: 0;
+    pointer-events: none;
     background: radial-gradient(
-      ellipse 60% 45% at 50% 50%,
-      var(--crt-haze) 0%,
-      var(--crt-void) 70%
+      ellipse 70% 50% at 50% 34%,
+      var(--haze) 0%,
+      var(--void) 68%
     );
   }
 
-  .intro.is-leaving { opacity: 0; }
-  .intro.is-done { display: none; }
+  body.is-intro { overflow: hidden; }
 
-  /* Held for one frame on replay so nothing eases back to its start state */
-  .intro.is-resetting,
-  .intro.is-resetting * {
-    transition: none !important;
+  :focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 3px;
+  }
+
+  /* The panel sets the measure for the whole page: the text column is
+     exactly as wide as the screen, so both share a left edge. */
+  .site {
+    position: relative;
+    z-index: 1;
+    width: min(calc(100% - 40px), var(--panel-w));
+    margin-inline: auto;
+    padding-bottom: 120px;
+  }
+
+  /* ================================================================
+     Hero — the panel, and where it comes to rest
+     ================================================================ */
+  .hero {
+    display: flex;
+    justify-content: center;
+    padding-top: 88px;
+    padding-bottom: 64px;
+  }
+
+  /* Opening state: the panel sits in the middle of the viewport */
+  body.is-intro .hero {
+    min-height: 100dvh;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .screen {
     position: relative;
-    width: var(--panel-w);
+    width: 100%;
     aspect-ratio: var(--panel-ar);
-    background: var(--crt-screen);
-    border: 1px solid var(--crt-frame);
+    background: var(--screen);
+    border: 1px solid var(--frame);
     box-shadow:
-      0 0 0 4px rgba(0, 0, 0, 0.28),
-      0 0 44px -6px var(--crt-glow);
+      0 0 0 4px rgba(0, 0, 0, 0.30),
+      0 0 52px -8px var(--glow);
   }
 
   .screen__grid {
@@ -192,24 +122,109 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    box-shadow: inset 0 0 26px -6px rgba(0, 0, 0, 0.65);
+    box-shadow: inset 0 0 30px -6px rgba(0, 0, 0, 0.7);
   }
 
   /* ================================================================
-     Control rig — outside the experience, on purpose
+     Content — assembles once the panel has lifted
+     ================================================================ */
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 600ms ease,
+      transform 600ms cubic-bezier(0.22, 0.61, 0.24, 1);
+  }
+
+  body.is-intro .content,
+  body.is-lifting .content {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .lede {
+    margin: 0;
+    font-size: clamp(17px, 2.4vw, 20px);
+    line-height: 1.55;
+    letter-spacing: -0.011em;
+    text-wrap: pretty;
+    color: var(--ink);
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .block__eyebrow {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  .block__rule {
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .block p {
+    margin: 0;
+    max-width: 58ch;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    font-size: 15px;
+  }
+
+  .links a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2px;
+    transition: border-color 160ms ease, color 160ms ease;
+  }
+
+  .links a:hover {
+    border-bottom-color: var(--sage);
+    color: #fff;
+  }
+
+  .colophon {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* ================================================================
+     Control rig — scaffolding, not part of the site
      ================================================================ */
   .rig {
     position: fixed;
-    z-index: 20;
+    z-index: 30;
     right: 16px;
     bottom: 16px;
-    width: 268px;
+    width: 262px;
     max-width: calc(100vw - 32px);
     display: flex;
     flex-direction: column;
     gap: 8px;
-    font-family: var(--font-mono);
-    color: var(--rig-fg);
+    font-family: var(--mono);
+    color: var(--ink);
   }
 
   .rig__btn {
@@ -219,27 +234,24 @@
     font-size: 11px;
     letter-spacing: 0.09em;
     text-transform: uppercase;
-    color: var(--rig-fg);
-    background: var(--rig-bg);
+    color: var(--ink);
+    background: rgba(15, 18, 17, 0.92);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-    border: 1px solid var(--rig-line);
+    border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 9px 12px;
     cursor: pointer;
     transition: border-color 150ms ease, color 150ms ease;
   }
 
-  .rig__btn:hover {
-    border-color: var(--rig-accent);
-    color: #fff;
-  }
+  .rig__btn:hover { border-color: var(--sage); color: #fff; }
 
   .rig__panel {
-    background: var(--rig-bg);
+    background: rgba(15, 18, 17, 0.92);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-    border: 1px solid var(--rig-line);
+    border: 1px solid var(--rule);
     border-radius: 2px;
   }
 
@@ -250,15 +262,15 @@
     letter-spacing: 0.09em;
     text-transform: uppercase;
     padding: 9px 12px;
-    color: var(--rig-dim);
+    color: var(--ink-dim);
     transition: color 150ms ease;
   }
 
   .rig__panel > summary::-webkit-details-marker { display: none; }
-  .rig__panel > summary:hover { color: var(--rig-fg); }
+  .rig__panel > summary:hover { color: var(--ink); }
   .rig__panel[open] > summary {
-    color: var(--rig-fg);
-    border-bottom: 1px solid var(--rig-line);
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
   }
 
   .rig__body {
@@ -279,13 +291,13 @@
     font-size: 10px;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--rig-dim);
+    color: var(--ink-dim);
   }
 
   .knob__value {
     font-size: 11px;
     font-variant-numeric: tabular-nums;
-    color: var(--rig-fg);
+    color: var(--ink);
   }
 
   .knob input[type="range"] {
@@ -293,7 +305,7 @@
     width: 100%;
     margin: 0;
     height: 14px;
-    accent-color: var(--rig-accent);
+    accent-color: var(--sage);
     cursor: pointer;
   }
 
@@ -301,9 +313,9 @@
     grid-column: 1 / -1;
     font: inherit;
     font-size: 12px;
-    color: var(--rig-fg);
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid var(--rig-line);
+    color: var(--ink);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 6px 8px;
     width: 100%;
@@ -314,48 +326,79 @@
     justify-content: space-between;
     gap: 8px;
     padding-top: 10px;
-    border-top: 1px solid var(--rig-line);
+    border-top: 1px solid var(--rule);
     font-size: 10px;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--rig-dim);
+    color: var(--ink-dim);
   }
 
   .rig__total b {
     font-weight: 400;
     text-transform: none;
     font-variant-numeric: tabular-nums;
-    color: var(--rig-fg);
+    color: var(--ink);
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 560px) {
+    /* clear the control rig, which is taller on narrow screens */
+    .site { padding-bottom: 170px; }
+    .hero { padding-top: 56px; padding-bottom: 44px; }
+    .content { gap: 44px; }
     .rig { left: 12px; right: 12px; bottom: 12px; width: auto; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .page__nav a { transition: none; }
+    html { scroll-behavior: auto; }
+    .content { transition: opacity 200ms linear; }
+    body.is-intro .content,
+    body.is-lifting .content { transform: none; }
   }
 </style>
 
-<main class="page">
-  <h1 class="page__mark">Ben Genin</h1>
-  <p class="page__line">
-    Placeholder homepage. This block stands in for the real site so the
-    intro has something to hand off to.
-  </p>
-  <div class="page__rule"></div>
-  <nav class="page__nav">
-    <a href="#work">Work</a>
-    <a href="#writing">Writing</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <p class="page__note">Prototype — intro only</p>
-</main>
+<div class="site">
+  <header class="hero" id="hero">
+    <div class="screen">
+      <canvas class="screen__grid" id="grid"></canvas>
+      <div class="screen__glass"></div>
+    </div>
+  </header>
 
-<div class="intro" id="intro" aria-hidden="true">
-  <div class="screen">
-    <canvas class="screen__grid" id="grid"></canvas>
-    <div class="screen__glass"></div>
+  <div class="content" id="content">
+    <p class="lede">
+      Placeholder copy. This is where the homepage picks up once the panel
+      settles — the first thing someone reads after the name resolves.
+    </p>
+
+    <section class="block">
+      <p class="block__eyebrow">Now</p>
+      <div class="block__rule"></div>
+      <p>
+        A line or two about what you're working on at the moment. Short
+        enough that it stays true for a few months at a time.
+      </p>
+    </section>
+
+    <section class="block">
+      <p class="block__eyebrow">Selected work</p>
+      <div class="block__rule"></div>
+      <p>
+        Two or three things worth pointing at, each with a sentence about
+        what it was and what came of it.
+      </p>
+    </section>
+
+    <section class="block">
+      <p class="block__eyebrow">Elsewhere</p>
+      <div class="block__rule"></div>
+      <div class="links">
+        <a href="#linkedin">LinkedIn</a>
+        <a href="#cv">CV</a>
+        <a href="#email">Email</a>
+      </div>
+    </section>
+
+    <p class="colophon">Prototype — entrance only</p>
   </div>
 </div>
 
@@ -365,7 +408,7 @@
     <summary>Tuning</summary>
     <div class="rig__body" id="knobs">
       <!-- knobs are built from CONFIG below -->
-      <div class="rig__total"><span>Total</span><b id="total">—</b></div>
+      <div class="rig__total"><span>To content</span><b id="total">—</b></div>
     </div>
   </details>
 </div>
@@ -375,24 +418,25 @@
   "use strict";
 
   /* ==================================================================
-     CONFIG — the only place you need to touch to retune the sequence.
+     CONFIG — the only place you need to touch to retune the entrance.
      Every value is live-editable from the Tuning panel too; these are
      the defaults the page loads with.
      ================================================================== */
   const DEFAULTS = {
-    greeting:        "Hi, I'm Ben",
-    scrambleDuration: 1200, // ms of pure television snow before anything forms
-    resolveDuration:  400,  // ms for the snow to settle into the words
-    holdDuration:     800,  // ms holding the formed name
-    fadeDuration:     600,  // ms for the whole intro to fade away
-    panelWidth:       420,  // px wide (capped at 78vw on small screens)
-    panelAspect:      1.60, // width : height — 1.6 is a wide, low rectangle
+    greeting:         "Hi, I'm Ben",
+    scrambleDuration: 1100, // ms of pure television snow before anything forms
+    resolveDuration:  380,  // ms for the snow to settle into the name
+    holdDuration:     600,  // ms holding the name, centred, before it lifts
+    settleDuration:   850,  // ms for the panel to travel up to its resting place
+    panelWidth:       560,  // px wide (capped at 88vw on small screens)
+    panelAspect:      3.40, // width : height — high numbers give a letterbox
     cellSize:         7,    // px per chunky cell — bigger = blockier, less legible
   };
 
   /* Static rendering character — analog imperfection, not glitch. */
   const STATIC = {
     fps:        20,       // cell refresh rate; ~20 reads analog, 60 reads digital
+    idleFps:    6,        // once settled the panel breathes rather than flickers
     gutter:     1,        // px of dark gap between cells (the mosaic look)
     base:       "#0b0d0c",// what shows through the gutters
     // Warm bone ramp sampled from the reference panel, dark → bright.
@@ -405,22 +449,21 @@
     // The name has to survive being drawn in cells. Below this many
     // columns it stops being readable, so on narrow screens the cells
     // shrink rather than the name breaking up.
-    minCols:    54,
+    minCols:    62,
     // How long a single cell spends flickering between snow and its
     // final value, as a fraction of resolveDuration. Higher = softer settle.
     settleBand: 0.35,
-    // Chance per frame that a settled cell twitches one step — the screen
-    // stays alive under the name instead of freezing into a bitmap.
-    residual:   0.05,
+    residual:   0.05,     // chance a cell twitches while the name is forming
+    idleResidual: 0.022,  // and once it is at rest on the page
   };
 
   /* How the name is rasterised onto the cell grid. */
   const TEXT = {
-    weight:     500,   // heavier strokes survive the downsample better
-    tracking:   "0.06em", // letters need air at this resolution
-    widthFrac:  0.84,  // fraction of panel width the name spans
-    maxHeightFrac: 0.30, // ceiling on cap height, as a fraction of panel height
-    gamma:      1.15,  // >1 darkens half-lit edge cells, keeping the letterforms crisp
+    weight:        700,     // heavier strokes survive the downsample better
+    tracking:      "0.04em",// letters need air, but not at the cost of stroke width
+    widthFrac:     0.86,    // fraction of panel width the name spans
+    maxHeightFrac: 0.46,    // ceiling on cap height, as a fraction of panel height
+    gamma:         1.15,    // >1 darkens half-lit edge cells, keeping strokes crisp
   };
 
   const FONT_STACK = '"Helvetica Neue", Helvetica, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
@@ -430,7 +473,9 @@
 
   const cfg = Object.assign({}, DEFAULTS);
 
-  const intro     = document.getElementById("intro");
+  const body      = document.body;
+  const hero      = document.getElementById("hero");
+  const screenEl  = hero.querySelector(".screen");
   const canvas    = document.getElementById("grid");
   const ctx       = canvas.getContext("2d");
   const replayBtn = document.getElementById("replay");
@@ -448,15 +493,16 @@
   let rafId = null;
   let timers = [];
   let bandPhase = 0;
+  let onScreen = true;
 
   /* ---------- Config → CSS custom properties ---------------------- */
   function applyConfig() {
     const root = document.documentElement.style;
-    root.setProperty("--panel-w", "min(" + cfg.panelWidth + "px, 78vw)");
+    root.setProperty("--panel-w", "min(" + cfg.panelWidth + "px, 88vw)");
     root.setProperty("--panel-ar", String(cfg.panelAspect));
-    root.setProperty("--fade-ms", cfg.fadeDuration + "ms");
+    root.setProperty("--settle-ms", cfg.settleDuration + "ms");
     const total = cfg.scrambleDuration + cfg.resolveDuration +
-                  cfg.holdDuration + cfg.fadeDuration;
+                  cfg.holdDuration + cfg.settleDuration;
     totalOut.textContent = (total / 1000).toFixed(2) + "s";
   }
 
@@ -494,11 +540,11 @@
 
     // Size the type to span widthFrac of the panel, then cap its height
     const text = cfg.greeting;
-    let size = h * 0.5;
+    let size = h * 0.6;
     octx.font = TEXT.weight + " " + size + "px " + FONT_STACK;
     const measured = octx.measureText(text).width || 1;
     size = Math.min(size * ((w * TEXT.widthFrac) / measured),
-                    h * TEXT.maxHeightFrac / 0.72);
+                    (h * TEXT.maxHeightFrac) / 0.72);
     octx.font = TEXT.weight + " " + size + "px " + FONT_STACK;
     octx.fillText(text, w / 2, h / 2);
 
@@ -539,11 +585,11 @@
   /* ---------- One frame -------------------------------------------
      progress < 0  → pure snow
      0 … 1         → cells settling onto the name
-     progress >= 1 → name held, with a little residual life
+     progress >= 1 → name at rest, with a little residual life
      ---------------------------------------------------------------- */
-  function draw(t, progress) {
+  function draw(t, progress, residual) {
     const w = canvas.width, h = canvas.height;
-    if (!w || !h) return;
+    if (!w || !h || !target) return;
 
     ctx.fillStyle = STATIC.base;
     ctx.fillRect(0, 0, w, h);
@@ -575,7 +621,7 @@
         if (local >= 1) {
           idx = target[i];
           // Residual twitch keeps the screen alive under the name
-          if (Math.random() < STATIC.residual) {
+          if (Math.random() < residual) {
             idx = Math.max(0, Math.min(levels - 1, idx + (Math.random() < 0.5 ? -1 : 1)));
           }
         } else if (local > 0 && Math.random() < local) {
@@ -594,8 +640,8 @@
     }
   }
 
-  /* ---------- Sequence -------------------------------------------- */
-  function clearTimers() {
+  /* ---------- Loops ------------------------------------------------ */
+  function stop() {
     timers.forEach(clearTimeout);
     timers = [];
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
@@ -603,22 +649,67 @@
 
   function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
 
-  function leave() {
-    intro.classList.add("is-leaving");
-    at(cfg.fadeDuration, () => {
-      clearTimers();
-      intro.classList.add("is-done");
+  /* Once the name is at rest the panel keeps breathing, slowly, and
+     only while it is actually on screen and the tab is visible. */
+  function idle() {
+    const interval = 1000 / STATIC.idleFps;
+    let last = -Infinity;
+
+    function frame(now) {
+      if (now - last >= interval) {
+        draw(now, 1, STATIC.idleResidual);
+        last = now;
+      }
+      rafId = requestAnimationFrame(frame);
+    }
+
+    if (reduced.matches) { draw(performance.now(), 1, 0); return; }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  /* ---------- The lift ---------------------------------------------
+     FLIP: measure the panel centred, let the layout drop to its final
+     shape, then invert the difference and release it. Nothing animates
+     a height, so the travel stays smooth.
+     ---------------------------------------------------------------- */
+  function lift() {
+    const first = screenEl.getBoundingClientRect().top;
+
+    body.classList.remove("is-intro");
+    body.classList.add("is-lifting");
+
+    const delta = first - screenEl.getBoundingClientRect().top;
+
+    hero.style.transition = "none";
+    hero.style.transform = "translateY(" + delta + "px)";
+    void hero.offsetWidth;
+
+    hero.style.transition = "transform " + cfg.settleDuration +
+                            "ms cubic-bezier(0.22, 0.61, 0.24, 1)";
+    hero.style.transform = "translateY(0)";
+
+    // Content comes up as the panel arrives, not after it
+    at(Math.round(cfg.settleDuration * 0.45), function () {
+      body.classList.remove("is-lifting");
+    });
+
+    at(cfg.settleDuration, function () {
+      hero.style.transition = "";
+      hero.style.transform = "";
     });
   }
 
+  /* ---------- Sequence -------------------------------------------- */
   function play() {
-    clearTimers();
+    stop();
 
-    // Snap back to the opening state without animating the rewind
-    intro.classList.add("is-resetting");
-    intro.classList.remove("is-done", "is-leaving");
-    void intro.offsetWidth;
-    intro.classList.remove("is-resetting");
+    hero.style.transition = "none";
+    hero.style.transform = "";
+    body.classList.remove("is-lifting");
+    body.classList.add("is-intro");
+    window.scrollTo(0, 0);
+    void hero.offsetWidth;
+    hero.style.transition = "";
 
     applyConfig();
     if (!layout()) return;
@@ -626,9 +717,9 @@
     seedSettle();
 
     if (reduced.matches) {
-      // No flicker: the name is simply already there.
-      draw(performance.now(), 1);
-      at(cfg.holdDuration, leave);
+      // No flicker: the name is simply already there, then it lifts.
+      draw(performance.now(), 1, 0);
+      at(cfg.holdDuration, function () { lift(); idle(); });
       return;
     }
 
@@ -644,11 +735,11 @@
 
       if (now - last >= interval) {
         const progress = elapsed < scramble ? -1 : (elapsed - scramble) / resolve;
-        draw(now, Math.min(progress, 1));
+        draw(now, Math.min(progress, 1), STATIC.residual);
         last = now;
       }
 
-      if (elapsed >= until) { rafId = null; leave(); return; }
+      if (elapsed >= until) { rafId = null; lift(); idle(); return; }
       rafId = requestAnimationFrame(frame);
     }
     rafId = requestAnimationFrame(frame);
@@ -659,10 +750,10 @@
     { key: "greeting",         label: "Name",     type: "text" },
     { key: "scrambleDuration", label: "Scramble", min: 0,   max: 3000, step: 50,   unit: "ms" },
     { key: "resolveDuration",  label: "Resolve",  min: 50,  max: 2000, step: 25,   unit: "ms" },
-    { key: "holdDuration",     label: "Hold",     min: 100, max: 3000, step: 50,   unit: "ms" },
-    { key: "fadeDuration",     label: "Fade out", min: 100, max: 2000, step: 50,   unit: "ms" },
-    { key: "panelWidth",       label: "Width",    min: 220, max: 760,  step: 10,   unit: "px" },
-    { key: "panelAspect",      label: "Aspect",   min: 1,   max: 2.8,  step: 0.05, unit: ":1" },
+    { key: "holdDuration",     label: "Hold",     min: 0,   max: 2500, step: 50,   unit: "ms" },
+    { key: "settleDuration",   label: "Lift",     min: 200, max: 2500, step: 50,   unit: "ms" },
+    { key: "panelWidth",       label: "Width",    min: 280, max: 900,  step: 10,   unit: "px" },
+    { key: "panelAspect",      label: "Aspect",   min: 1.2, max: 5,    step: 0.05, unit: ":1" },
     { key: "cellSize",         label: "Cell size",min: 3,   max: 20,   step: 1,    unit: "px" },
   ];
 
@@ -686,9 +777,8 @@
       input.value = cfg[k.key];
       input.addEventListener("input", function () {
         cfg[k.key] = input.value;
-        if (layout()) { buildTarget(); }
+        if (layout()) buildTarget();
       });
-      wrap.append(name, out, input);
     } else {
       input.type = "range";
       input.min = k.min; input.max = k.max; input.step = k.step;
@@ -707,9 +797,9 @@
       });
 
       render();
-      wrap.append(name, out, input);
     }
 
+    wrap.append(name, out, input);
     knobHost.insertBefore(wrap, totalRow);
   });
 
@@ -718,8 +808,26 @@
 
   window.addEventListener("resize", function () {
     applyConfig();
-    if (layout()) { buildTarget(); }
+    if (layout()) buildTarget();
   });
+
+  // Don't burn frames on a panel nobody is looking at
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
+    else if (rafId === null && !body.classList.contains("is-intro")) { idle(); }
+  });
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      onScreen = entries[0].isIntersecting;
+      if (!onScreen && rafId !== null && !body.classList.contains("is-intro")) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      } else if (onScreen && rafId === null && !body.classList.contains("is-intro")) {
+        idle();
+      }
+    }, { threshold: 0 }).observe(screenEl);
+  }
 
   applyConfig();
   play();
